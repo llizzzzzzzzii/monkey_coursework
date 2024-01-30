@@ -55,9 +55,9 @@ class MonkeyRunner:
 
             size = 15
             for _ in range(5):
-                x,y=get_random_coordinate(window_size)
-                self.draw_and_clear_circle(page,x,y,size,duration=100)
-                page.mouse.click(x,y)
+                x, y = get_random_coordinate(window_size)
+                self.draw_and_clear_circle(page, x, y, size, duration=100)
+                page.mouse.click(x, y)
                 time.sleep(pause)
 
             browser.close()
