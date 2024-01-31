@@ -32,10 +32,10 @@ jobs:
             ruff --output-format=github .
         continue-on-error: true
         
-      - name: Check code style
+      - name: Lint with pylint
         run: |
-         pip install flake8
-         flake8 main.py
+          pip install pylint
+          pylint .
          
       - name: Build application
         run: |
