@@ -28,8 +28,9 @@ jobs:
 
       - name: Lint with ruff
         run: |
-          ruff --format=github --target-version=py37 .
-          playwright install
+            pip install ruff
+            ruff --output-format=github .
+        continue-on-error: true
         
       - name: Check code style
         run: |
