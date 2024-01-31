@@ -24,6 +24,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Lint with ruff
+        run: |
+          ruff --format=github --target-version=py37 .
+          playwright install
         
       - name: Check code style
         run: |
