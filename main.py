@@ -5,7 +5,8 @@ from fixtures.constants import Links
 
 
 class MonkeyRunner:
-    def __init__(self, url, count=500, species=None, delay=0, indication=False, indication_size=15, ignore_errors=False,
+    def __init__(self, url, count=500, species=None, delay=0, indication=False,
+                 indication_size=15, ignore_errors=False,
                  restricted_page=False, pause=1):
         self.url = url
         self.count = count
@@ -71,6 +72,7 @@ class MonkeyRunner:
             # hover(self, window_size, page)
 
             browser.close()
+
 
 if __name__ == "__main__":
     LogMonkey.logger.info("Configuring monkey...")
