@@ -1,6 +1,6 @@
 import time
 from main import get_random_coordinate
-from deco import *
+from fixtures.deco import *
 
 
 def hold(self, duration, w_size, page, size):
