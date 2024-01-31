@@ -2,7 +2,6 @@ import random
 import time
 from playwright.sync_api import sync_playwright
 
-import actions.click
 from actions.click import *
 def get_random_coordinate(w_size):
     x = random.randint(0, w_size['width'])
@@ -61,7 +60,6 @@ class MonkeyRunner:
                 x, y = get_random_coordinate(window_size)
                 self.draw_and_clear_circle(page, x, y, size, duration=100)
                 page.mouse.click(x, y)
-                one_click()
                 time.sleep(pause)
 
             browser.close()
