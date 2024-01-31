@@ -1,5 +1,5 @@
 import time
-from fixtures.deco import *
+from fixtures.deco import LogAction
 from conftest import get_random_coordinate
 
 def hover(monkey, w_size, page):
