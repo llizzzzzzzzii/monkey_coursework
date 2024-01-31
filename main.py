@@ -1,24 +1,21 @@
-import random
-import time
 from playwright.sync_api import sync_playwright
-
 from actions.click import *
-def get_random_coordinate(w_size):
-    x = random.randint(0, w_size['width'])
-    y = random.randint(0, w_size['height'])
-    return x, y
+from actions.hold import *
+from conftest import *
 
 class MonkeyRunner:
-    def __init__(self, url, count=500, species=None, delay=0, indication=None, ignore_errors=False, restricted_page=False):
+    def __init__(self, url, count=500, species=None, delay=0, indication=None, indication_size=15, ignore_errors=False, restricted_page=False, pause=1):
         self.url = url
         self.count = count
         self.species = species
         self.delay = delay
         self.indication = indication
+        self.indication_size = indication_size
         self.ignore_errors = ignore_errors
         self.restricted_page = restricted_page
+        self.pause = pause
 
-    def draw_and_clear_circle(self, page, x, y, size, duration=500):
+    def draw_and_clear_circle(self, page, x, y, duration=500):
         script = '''
                 async (params) => {
                     const [x, y, size, duration] = params;
@@ -38,42 +35,51 @@ class MonkeyRunner:
                     div.remove();
                 }
             '''
-        page.evaluate(script, [x, y, size, duration])
+
+        page.evaluate(script, [x, y, self.indication_size, duration])
 
     def run_monkey(self):
+        LogMonkey.logger.info("Running monkey...")
         with sync_playwright() as playwright:
-            browser = playwright.chromium.launch(headless=False)
-            context = browser.new_context()
-            page = context.new_page()
-            page.set_viewport_size({"width": 1800, "height": 1200})
-            page.goto(self.url)
-            page.wait_for_selector('body')
-            window_size = page.evaluate('''() => {
-                    return {
-                        width: window.innerWidth,
-                        height: window.innerHeight
-                    }
-                }''')
+            try:
+                browser = playwright.chromium.launch(headless=False)
+                context = browser.new_context()
+                page = context.new_page()
+                page.set_viewport_size({"width": 1800, "height": 1200})
+                page.goto(self.url)
+                page.wait_for_selector('body')
+                window_size = page.evaluate('''() => {
+                        return {
+                            width: window.innerWidth,
+                            height: window.innerHeight
+                        }
+                    }''')
+            except Exception:
+                LogMonkey.logger.exception("Error opening a web page")
+                exit()
 
-            size = 15
-            for _ in range(5):
-                x, y = get_random_coordinate(window_size)
-                self.draw_and_clear_circle(page, x, y, size, duration=100)
-                page.mouse.click(x, y)
-                time.sleep(pause)
+            # for _ in range(5):
+            #     one_click(self, window_size, page)
+            click_and_hold(self, window_size, page)
+            # hold_and_move_mouse(self, window_size, page)
+            # multi_click(self, window_size, page)
+            # hold(self, window_size, page)
+            # double_click(self, window_size, page)
+            # hover(self, window_size, page)
 
             browser.close()
 
 if __name__ == "__main__":
+    LogMonkey.logger.info("Configuring monkey...")
     url = 'https://ru.wikipedia.org/wiki/%D0%97%D0%B0%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0'
     count = 500
     species = None
     delay = 0
-    indication = None
+    indication = True
+    indication_size = 15
     ignore_errors = False
     restricted_page = False
-
     pause = 1
 
-    monkey = MonkeyRunner(url, count, species, delay, indication, ignore_errors, restricted_page)
+    monkey = MonkeyRunner(url, count, species, delay, indication, indication_size, ignore_errors, restricted_page, pause)
     monkey.run_monkey()
