@@ -1,5 +1,5 @@
 import pytest
-
+import random
 
 @pytest.fixture()
 def find_locators(page):
@@ -28,3 +28,8 @@ def find_locators(page):
         if clickable:
             locators_info['click'] = image
     return locators_info
+
+def get_random_coordinate(w_size):
+    x = random.randint(0, w_size['width'])
+    y = random.randint(0, w_size['height'])
+    return x, y
