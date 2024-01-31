@@ -1,5 +1,5 @@
 import time
-from main import get_random_coordinate
+from conftest import get_random_coordinate
 from fixtures.deco import *
 
 def hold(monkey, w_size, page, duration=5):

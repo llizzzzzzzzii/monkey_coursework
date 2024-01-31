@@ -1,10 +1,12 @@
+from fixtures.deco import LogMonkey
 from playwright.sync_api import sync_playwright
-from actions.click import *
-from actions.hold import *
-from conftest import *
+from actions.click import one_click
+from fixtures.constants import Links
+
 
 class MonkeyRunner:
-    def __init__(self, url, count=500, species=None, delay=0, indication=None, indication_size=15, ignore_errors=False, restricted_page=False, pause=1):
+    def __init__(self, url, count=500, species=None, delay=0, indication=False, indication_size=15, ignore_errors=False,
+                 restricted_page=False, pause=1):
         self.url = url
         self.count = count
         self.species = species
@@ -30,7 +32,8 @@ class MonkeyRunner:
                     div.style.borderRadius = '50%';
                     document.body.appendChild(div);
 
-                    await new Promise(resolve => setTimeout(resolve, duration));
+                    await new Promise(resolve => setTimeout(resolve, duration)
+                    );
 
                     div.remove();
                 }
@@ -58,9 +61,9 @@ class MonkeyRunner:
                 LogMonkey.logger.exception("Error opening a web page")
                 exit()
 
-            # for _ in range(5):
-            #     one_click(self, window_size, page)
-            click_and_hold(self, window_size, page)
+            for _ in range(5):
+                one_click(self, window_size, page)
+            # click_and_hold(self, window_size, page)
             # hold_and_move_mouse(self, window_size, page)
             # multi_click(self, window_size, page)
             # hold(self, window_size, page)
@@ -71,15 +74,8 @@ class MonkeyRunner:
 
 if __name__ == "__main__":
     LogMonkey.logger.info("Configuring monkey...")
-    url = 'https://ru.wikipedia.org/wiki/%D0%97%D0%B0%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0'
-    count = 500
-    species = None
-    delay = 0
-    indication = True
-    indication_size = 15
-    ignore_errors = False
-    restricted_page = False
-    pause = 1
+    url = Links.URL
+    indicate = True
+    monkey = MonkeyRunner(url, indicate)
 
-    monkey = MonkeyRunner(url, count, species, delay, indication, indication_size, ignore_errors, restricted_page, pause)
     monkey.run_monkey()
