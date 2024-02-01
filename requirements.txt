@@ -1,6 +1,5 @@
 allure-pytest==2.13.2
 allure-python-commons==2.13.2
-apturl==0.5.2
 attrs==23.1.0
 backports.entry-points-selectable==1.1.0
 bcrypt==3.1.7
