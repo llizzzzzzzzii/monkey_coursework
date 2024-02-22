@@ -7,7 +7,7 @@ from fixtures.constants import Links
 class MonkeyRunner:
     def __init__(self, url, count=500, species=None, delay=0, indication=False,
                  indication_size=15, ignore_errors=False,
-                 restricted_page=False, pause=1):
+                 restricted_page=False):
         self.url = url
         self.count = count
         self.species = species
@@ -16,7 +16,6 @@ class MonkeyRunner:
         self.indication_size = indication_size
         self.ignore_errors = ignore_errors
         self.restricted_page = restricted_page
-        self.pause = pause
 
     def draw_and_clear_circle(self, page, x, y, duration=500):
         script = '''
@@ -79,5 +78,4 @@ if __name__ == "__main__":
     url = Links.URL
     indicate = True
     monkey = MonkeyRunner(url, indicate)
-
     monkey.run_monkey()
