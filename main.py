@@ -3,17 +3,15 @@ from playwright.sync_api import sync_playwright
 from actions.click import one_click
 from fixtures.constants import Links
 
-
 class MonkeyRunner:
     def __init__(self, url, count=500, species=None, delay=0, indication=False,
-                 indication_size=15, ignore_errors=False,
+                 ignore_errors=False,
                  restricted_page=False):
         self.url = url
         self.count = count
         self.species = species
         self.delay = delay
         self.indication = indication
-        self.indication_size = indication_size
         self.ignore_errors = ignore_errors
         self.restricted_page = restricted_page
 
@@ -27,7 +25,7 @@ class MonkeyRunner:
                     div.style.top = `${y}px`;
                     div.style.width = `${size}px`;
                     div.style.height = `${size}px`;
-                    div.style.opacity = '0.5';
+                    div.style.opacity = '0.7';
                     div.style.background = 'red';
                     div.style.borderRadius = '50%';
                     document.body.appendChild(div);
@@ -39,7 +37,7 @@ class MonkeyRunner:
                 }
             '''
 
-        page.evaluate(script, [x, y, self.indication_size, duration])
+        page.evaluate(script, [x, y, duration])
 
     def run_monkey(self):
         LogMonkey.logger.info("Running monkey...")
