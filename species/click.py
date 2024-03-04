@@ -1,6 +1,7 @@
 import time
-from fixtures.deco import LogAction
-from conftest import get_random_coordinate
+from logging.deco import LogAction
+from locators import get_random_coordinate
+
 
 def hover(monkey, w_size, page):
     x, y = get_random_coordinate(w_size)
@@ -25,6 +26,7 @@ def one_click(monkey, w_size, page):
         LogAction.logger.exception("Error mouse click")
         exit()
     LogAction.logger.info(f"Click at position: {x, y}")
+
 
 def double_click(monkey, w_size, page):
     x, y = get_random_coordinate(w_size)

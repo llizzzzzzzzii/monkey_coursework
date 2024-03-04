@@ -1,6 +1,7 @@
 import logging
 from colorlog import ColoredFormatter
 
+
 class LogAction:
     logger = logging.getLogger("Action")
     logger.setLevel(logging.INFO)
@@ -21,6 +22,7 @@ class LogAction:
 
     handler.setFormatter(formatter)
     logger.addHandler(handler)
+
 
 class LogMonkey:
     logger = logging.getLogger("Monkey")
