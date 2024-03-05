@@ -2,7 +2,7 @@ import random
 import time
 
 
-def send_keys_to_random_element(page, indication, delay):
+def send_keys_to_random_element(page, indication):
     input_elements = page.query_selector_all('input, textarea, [contenteditable=true]')
     visible_input_elements = [element for element in input_elements if
                               element.is_visible() and element.get_attribute("type") not in ["radio", "checkbox"]]
@@ -46,4 +46,3 @@ def send_keys_to_random_element(page, indication, delay):
                        }""",
                     random_input_element,
                 )
-        time.sleep(delay)
