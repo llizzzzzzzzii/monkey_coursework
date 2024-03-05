@@ -1,3 +1,4 @@
+from logi.loger import LogMonkey
 from specie.input_keys import send_keys_to_random_element
 
 
@@ -14,10 +15,12 @@ class Monkey:
         self.restricted_page = restricted_page
 
     def run(self):
+        LogMonkey.logger.info(f"Run monkey with {self.species}")
         self.page.goto(self.url)
         self.page.wait_for_load_state('domcontentloaded')
         for _ in range(self.count):
-            actions = self.species
-            for action in actions:
-                if action == 'input':
-                    send_keys_to_random_element(self.page, self.indication)
+            action = self.species
+            if action == 'input':
+                send_keys_to_random_element(self.page, self.indication)
+
+        LogMonkey.logger.info("Success")

@@ -1,14 +1,12 @@
 import logging
 from colorlog import ColoredFormatter
 
-
-class LogAction:
-    logger = logging.getLogger("Action")
+def set_logger(logger):
     logger.setLevel(logging.INFO)
 
     handler = logging.StreamHandler()
     formatter = ColoredFormatter(
-        "%(log_color)s%(asctime)s %(levelname)s - %(message)s%(reset)s",
+        "%(log_color)s%(name)s: %(message)s%(reset)s",
         log_colors={
             'DEBUG': 'cyan',
             'INFO': 'green',
@@ -23,6 +21,9 @@ class LogAction:
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
+class LogClicker:
+    logger = logging.getLogger("Clicker")
+    set_logger(logger)
 
 class LogMonkey:
     logger = logging.getLogger("Monkey")
@@ -30,7 +31,7 @@ class LogMonkey:
 
     handler = logging.StreamHandler()
     formatter = ColoredFormatter(
-        "%(log_color)s%(name)s - %(levelname)s - %(message)s%(reset)s",
+        "%(log_color)s%(message)s%(reset)s",
         log_colors={
             'DEBUG': 'cyan',
             'INFO': 'green',
