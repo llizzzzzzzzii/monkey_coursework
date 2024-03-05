@@ -27,10 +27,10 @@ class Monkey:
             for action in actions:
                 if action == 'input':
                     if get_random_action() == 'text':
-                        send_text(self.page, self.indication)
+                        send_text(self.page, self.indication, self.delay)
                         current += 1
                     else:
-                        send_keys(self.page, self.indication)
+                        send_keys(self.page, self.indication, self.delay)
                         current += 1
                 if count_species == current:
                     break
