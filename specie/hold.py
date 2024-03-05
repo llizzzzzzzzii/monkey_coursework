@@ -1,6 +1,6 @@
 import time
 from locators import get_random_coordinate
-from logging.deco import LogAction
+from logi.loger import LogAction
 
 
 def hold(monkey, w_size, page, duration=5):

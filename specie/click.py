@@ -1,5 +1,5 @@
 import time
-from logging.deco import LogAction
+from logi.loger import LogAction
 from locators import get_random_coordinate
 
 
