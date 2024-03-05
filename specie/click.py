@@ -1,6 +1,7 @@
 import time
-from fixtures.deco import LogClicker
-from conftest import get_random_coordinate
+from logi.loger import LogClicker
+from locators import get_random_coordinate
+
 
 def hover(monkey, w_size, page):
     x, y = get_random_coordinate(w_size)

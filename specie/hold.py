@@ -1,6 +1,5 @@
-import time
-from conftest import get_random_coordinate
-from fixtures.deco import LogClicker
+from locators import get_random_coordinate
+from logi.loger import LogClicker
 
 def hold(monkey, w_size, page, duration=5):
     x, y = get_random_coordinate(w_size)
