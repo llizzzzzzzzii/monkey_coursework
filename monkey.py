@@ -1,3 +1,4 @@
+from specie.input_keys import send_keys_to_random_element
 class Monkey:
     def __init__(self, url, page, count=500, species=None, delay=0, indication=False, ignore_errors=False,
                  restricted_page=False):
@@ -14,5 +15,8 @@ class Monkey:
         self.page.goto(self.url)
         self.page.wait_for_load_state('domcontentloaded')
         for _ in range(self.count):
-            action = self.species
+            actions = self.species
             # проверка на действия и их выполнение
+            for action in actions:
+                if action=='input':
+                    send_keys_to_random_element(self.page,self.indication,self.delay)
