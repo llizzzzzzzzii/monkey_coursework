@@ -1,5 +1,7 @@
 from logi.loger import LogMonkey
-from specie.input_keys import send_keys_to_random_element
+from specie.input_keys import send_keys
+from specie.input_keys import send_text
+from specie.input_keys import get_random_action
 
 
 class Monkey:
@@ -18,9 +20,19 @@ class Monkey:
         LogMonkey.logger.info(f"Run monkey with {self.species}")
         self.page.goto(self.url)
         self.page.wait_for_load_state('domcontentloaded')
-        for _ in range(self.count):
-            action = self.species
-            if action == 'input':
-                send_keys_to_random_element(self.page, self.indication)
+        count_species = self.count
+        current = 0
+        while current < count_species:
+            actions = self.species
+            for action in actions:
+                if action == 'input':
+                    if get_random_action() == 'text':
+                        send_text(self.page, self.indication)
+                        current += 1
+                    else:
+                        send_keys(self.page, self.indication)
+                        current += 1
+                if count_species == current:
+                    break
 
         LogMonkey.logger.info("Success")
