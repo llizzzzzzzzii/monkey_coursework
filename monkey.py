@@ -1,3 +1,4 @@
+from logi.loger import LogMonkey
 class Monkey:
     def __init__(self, url, page, count=500, species=None, delay=0, indication=False, ignore_errors=False,
                  restricted_page=False):
@@ -11,8 +12,11 @@ class Monkey:
         self.restricted_page = restricted_page
 
     def run(self):
+        LogMonkey.logger.info(f"Run monkey with {self.species}")
         self.page.goto(self.url)
         self.page.wait_for_load_state('domcontentloaded')
         for _ in range(self.count):
             action = self.species
             # проверка на действия и их выполнение
+
+        LogMonkey.logger.info("Success")

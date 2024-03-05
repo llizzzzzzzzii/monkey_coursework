@@ -1,7 +1,5 @@
-import time
 from locators import get_random_coordinate
-from logi.loger import LogAction
-
+from logi.loger import LogClicker
 
 def hold(monkey, w_size, page, duration=5):
     x, y = get_random_coordinate(w_size)
@@ -14,9 +12,9 @@ def hold(monkey, w_size, page, duration=5):
             page.wait_for_timeout(duration * 1000)
         page.mouse.up()
     except Exception:
-        LogAction.logger.exception("Error hold")
+        LogClicker.logger.exception("Error: Hold failed")
         exit()
-    LogAction.logger.info(f"Hold the mouse for {duration} s at position: {x, y}")
+    LogClicker.logger.info(f"Hold the mouse for {duration} s at position: {x, y}")
 
 
 def click_and_hold(monkey, w_size, page, duration=5):
@@ -31,6 +29,6 @@ def click_and_hold(monkey, w_size, page, duration=5):
             page.wait_for_timeout(duration * 1000)
         page.mouse.up()
     except Exception:
-        LogAction.logger.exception("Error click and hold")
+        LogClicker.logger.exception("Error: Click and hold failed")
         exit()
-    LogAction.logger.info(f"Click and hold the mouse for {duration} s at position: {x, y}")
+    LogClicker.logger.info(f"Clicked and held at position ({x, y})")
