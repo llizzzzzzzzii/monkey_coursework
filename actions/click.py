@@ -1,5 +1,5 @@
 import time
-from fixtures.deco import LogAction
+from fixtures.deco import LogClicker
 from conftest import get_random_coordinate
 
 def hover(monkey, w_size, page):
@@ -9,9 +9,9 @@ def hover(monkey, w_size, page):
         if monkey.indication:
             monkey.draw_and_clear_circle(page, x, y)
     except Exception:
-        LogAction.logger.exception("Error mouse hover")
+        LogClicker.logger.exception("Error: Hover failed")
         exit()
-    LogAction.logger.info(f"Hover at position: {x, y}")
+    LogClicker.logger.info(f"Hovered at position ({x, y})")
 
 
 def one_click(monkey, w_size, page):
@@ -22,9 +22,9 @@ def one_click(monkey, w_size, page):
             monkey.draw_and_clear_circle(page, x, y)
         page.mouse.click(x, y)
     except Exception:
-        LogAction.logger.exception("Error mouse click")
+        LogClicker.logger.exception("Error: Click failed")
         exit()
-    LogAction.logger.info(f"Click at position: {x, y}")
+    LogClicker.logger.info(f"Clicked at position ({x, y})")
 
 def double_click(monkey, w_size, page):
     x, y = get_random_coordinate(w_size)
@@ -35,9 +35,9 @@ def double_click(monkey, w_size, page):
             monkey.draw_and_clear_circle(page, x, y)
         page.mouse.dblclick(x, y)
     except Exception:
-        LogAction.logger.exception("Error mouse double click")
+        LogClicker.logger.exception("Error: Double click failed")
         exit()
-    LogAction.logger.info(f"Double click at position: {x, y}")
+    LogClicker.logger.info(f"Clicked at position ({x, y}) 2 times")
 
 
 def multi_click(monkey, w_size, page, count=5):
@@ -50,6 +50,6 @@ def multi_click(monkey, w_size, page, count=5):
             page.mouse.click(x, y)
             time.sleep(0.1)
     except Exception:
-        LogAction.logger.exception("Error mouse multi clicks")
+        LogClicker.logger.exception("Error: Multiple clicks failed")
         exit()
-    LogAction.logger.info(f"{count} clicks at position: {x, y}")
+    LogClicker.logger.info(f"Clicked at position ({x, y}) {count} times")

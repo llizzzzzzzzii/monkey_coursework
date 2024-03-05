@@ -40,7 +40,7 @@ class MonkeyRunner:
         page.evaluate(script, [x, y, duration])
 
     def run_monkey(self):
-        LogMonkey.logger.info("Running monkey...")
+        LogMonkey.logger.info(f"Run monkey with {self.species}")
         with sync_playwright() as playwright:
             try:
                 browser = playwright.chromium.launch(headless=False)
@@ -69,10 +69,10 @@ class MonkeyRunner:
             # hover(self, window_size, page)
 
             browser.close()
+            LogMonkey.logger.info("Success")
 
 
 if __name__ == "__main__":
-    LogMonkey.logger.info("Configuring monkey...")
     url = Links.URL
     indicate = True
     monkey = MonkeyRunner(url, indicate)
