@@ -74,7 +74,7 @@ def multiple_click(page, indication, restricted_page):
         exit()
     LogClicker.logger.info(f"Clicked at position {x, y} {count} times")
 
-def hover(page, indication):
+def hover(page, indication, restricted_page):
     element, x, y = get_element_and_coordinate(page)
     try:
         if indication:
