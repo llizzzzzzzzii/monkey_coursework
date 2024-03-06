@@ -28,14 +28,14 @@ class Monkey:
             for action in actions:
                 if action == 'typer':
                     if get_random_action() == 'text':
-                        send_text(self.page, self.indication, self.delay)
+                        send_text(self.page, self.indication, self.restricted_page)
                         current += 1
                     else:
-                        send_keys(self.page, self.indication, self.delay)
+                        send_keys(self.page, self.indication, self.restricted_page)
                         current += 1
                 if action == 'clicker':
                     click_action = Clicker.random_action()
-                    click_action(self.page, self.indication)
+                    click_action(self.page, self.indication, self.restricted_page)
                     current += 1
                 if count_species == current:
                     break
