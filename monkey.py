@@ -1,7 +1,7 @@
 from logi.loger import LogMonkey
-from specie.input_keys import send_keys
-from specie.input_keys import send_text
-from specie.input_keys import get_random_action
+from specie.Typer import send_keys
+from specie.Typer import send_text
+from specie.Typer import get_random_action
 from specie.Clicker import random_action
 
 class Monkey:
@@ -10,7 +10,7 @@ class Monkey:
         self.url = url
         self.page = page
         self.count = count
-        self.species = species if species else ['clicker', 'input']
+        self.species = species if species else ['clicker', 'typer']
         self.delay = delay
         self.indication = indication
         self.ignore_errors = ignore_errors
@@ -26,7 +26,7 @@ class Monkey:
         while current < count_species:
             actions = self.species
             for action in actions:
-                if action == 'input':
+                if action == 'typer':
                     if get_random_action() == 'text':
                         send_text(self.page, self.indication, self.delay)
                         current += 1
@@ -36,6 +36,7 @@ class Monkey:
                 if action == 'clicker':
                     click_action = random_action()
                     click_action(self.page, self.indication, self.restricted_page)
+                    current += 1
                 if count_species == current:
                     break
 

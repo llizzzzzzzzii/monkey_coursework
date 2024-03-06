@@ -25,6 +25,10 @@ class LogClicker:
     logger = logging.getLogger("Clicker")
     set_logger(logger)
 
+class LogTyper:
+    logger = logging.getLogger("Typer")
+    set_logger(logger)
+
 class LogMonkey:
     logger = logging.getLogger("Monkey")
     logger.setLevel(logging.INFO)
