@@ -1,6 +1,7 @@
 import time
 import random
 from logi.loger import LogClicker
+from logi.loger import LogError
 
 def find_locators(page):
     clickable_elements = page.query_selector_all('button, a, input, [role="button"]')
@@ -38,7 +39,7 @@ def click(page, indication):
             draw_indicator(page, x, y)
         element.click()
     except Exception:
-        LogClicker.logger.exception("Error: Click failed")
+        LogError.logger.exception("Click failed")
         exit()
     LogClicker.logger.info(f"Clicked at position {x, y}")
 
@@ -50,7 +51,7 @@ def double_click(page, indication):
             draw_indicator(page, x, y)
         element.dblclick()
     except Exception:
-        LogClicker.logger.exception("Error: Double click failed")
+        LogError.logger.exception("Double click failed")
         exit()
     LogClicker.logger.info(f"Clicked at position {x, y} 2 times")
 
@@ -63,7 +64,7 @@ def multiple_click(page, indication):
                 draw_indicator(page, x, y)
             element.click()
     except Exception:
-        LogClicker.logger.exception("Error: Multiple clicks failed")
+        LogError.logger.exception("Multiple clicks failed")
         exit()
     LogClicker.logger.info(f"Clicked at position {x, y} {count} times")
 
@@ -74,7 +75,7 @@ def hover(page, indication):
             draw_indicator(page, x, y)
         element.hover()
     except Exception:
-        LogClicker.logger.exception("Error: Hover failed")
+        LogError.logger.exception("Hover failed")
         exit()
     LogClicker.logger.info(f"Hovered at position {x, y}")
 
@@ -88,6 +89,6 @@ def click_and_hold(page, indication):
         time.sleep(0.7)
         page.mouse.up()
     except Exception:
-        LogClicker.logger.exception("Error: Click and hold failed")
+        LogError.logger.exception("Click and hold failed")
         exit()
     LogClicker.logger.info(f"Clicked and held at position {x, y}")
