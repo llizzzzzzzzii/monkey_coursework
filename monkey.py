@@ -35,7 +35,7 @@ class Monkey:
                         current += 1
                 if action == 'clicker':
                     click_action = Clicker.random_action()
-                    click_action(self.page, self.indication)
+                    click_action(self.page, self.indication, self.restricted_page)
                     current += 1
                 if count_species == current:
                     break

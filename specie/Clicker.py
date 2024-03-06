@@ -3,6 +3,9 @@ import random
 from logi.loger import LogClicker
 from logi.loger import LogError
 
+def block_movement(page, element):
+    page.evaluate('(element) => { element.addEventListener("click", (e) => { e.preventDefault(); }); }', element)
+
 def find_locators(page):
     clickable_elements = page.query_selector_all('button, a, input, [role="button"]')
     viewport_height = page.viewport_size['height']
@@ -32,58 +35,68 @@ def get_element_and_coordinate(page):
     y = int(y + height / 2)
     return element, x, y
 
-def click(page, indication):
+def click(page, indication, restricted_page):
     element, x, y = get_element_and_coordinate(page)
     try:
         if indication:
             draw_indicator(page, x, y)
+        if restricted_page:
+            block_movement(page, element)
         element.click()
     except Exception:
         LogError.logger.exception("Click failed")
         exit()
     LogClicker.logger.info(f"Clicked at position {x, y}")
 
-def double_click(page, indication):
+def double_click(page, indication, restricted_page):
     element, x, y = get_element_and_coordinate(page)
     try:
         if indication:
             draw_indicator(page, x, y)
             draw_indicator(page, x, y)
+        if restricted_page:
+            block_movement(page, element)
         element.dblclick()
     except Exception:
         LogError.logger.exception("Double click failed")
         exit()
     LogClicker.logger.info(f"Clicked at position {x, y} 2 times")
 
-def multiple_click(page, indication):
+def multiple_click(page, indication, restricted_page):
     element, x, y = get_element_and_coordinate(page)
     count = random.randint(3, 10)
     try:
         for i in range(count):
             if indication:
                 draw_indicator(page, x, y)
+            if restricted_page:
+                block_movement(page, element)
             element.click()
     except Exception:
         LogError.logger.exception("Multiple clicks failed")
         exit()
     LogClicker.logger.info(f"Clicked at position {x, y} {count} times")
 
-def hover(page, indication):
+def hover(page, indication, restricted_page):
     element, x, y = get_element_and_coordinate(page)
     try:
         if indication:
             draw_indicator(page, x, y)
+        if restricted_page:
+            block_movement(page, element)
         element.hover()
     except Exception:
         LogError.logger.exception("Hover failed")
         exit()
     LogClicker.logger.info(f"Hovered at position {x, y}")
 
-def click_and_hold(page, indication):
+def click_and_hold(page, indication, restricted_page):
     element, x, y = get_element_and_coordinate(page)
     try:
         if indication:
             draw_indicator(page, x, y)
+        if restricted_page:
+            block_movement(page, element)
         page.mouse.move(x, y)
         page.mouse.down()
         time.sleep(0.7)
