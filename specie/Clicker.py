@@ -18,7 +18,7 @@ def draw_indicator(page, x, y):
     page.evaluate(script_remove)
 
 def random_action():
-    actions = [hover, click, double_click, multiple_click, click_and_hold]
+    actions = [hover, click, double_click, click_and_hold]
     get_random = random.choice(actions)
     return get_random
 
