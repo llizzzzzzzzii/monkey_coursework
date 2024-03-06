@@ -15,13 +15,13 @@ def send_text(page, indication, delay):
     page.wait_for_load_state("networkidle")
     random_text = ''.join(random.choices('12345678910!@#$%^&*(!"№;%:?*()=+abcdefghijklmnopqrstuvwxyz', k=5))
     random_input_element = random.choice(find_locators(page))
-    x, y = random_input_element.bounding_box()["x"], random_input_element.bounding_box()["y"]
+    x, y = int(random_input_element.bounding_box()["x"]), int(random_input_element.bounding_box()["y"])
     try:
         if random_input_element:
             if random_input_element.get_attribute("value") is not None and random_input_element.get_attribute(
                     "value") != "":
                 random_input_element.fill("")
-            page.wait_for_load_state("networkidle")
+            # page.wait_for_load_state("networkidle")
             # random_input_element.fill(random_text)
             if indication is True:
                 page.evaluate(
@@ -38,7 +38,7 @@ def send_text(page, indication, delay):
                     random_input_element,
                 )
                 random_input_element.fill(random_text)
-                page.wait_for_load_state("networkidle")
+                # page.wait_for_load_state("networkidle")
     except Exception:
         LogTyper.logger.exception("Error: Typed text failed")
         exit()
@@ -49,7 +49,7 @@ def send_text(page, indication, delay):
 def send_keys(page, indication, delay):
     page.wait_for_load_state("networkidle")
     random_input_element = random.choice(find_locators(page))
-    x, y = random_input_element.get_attribute("x"), random_input_element.get_attribute("y")
+    x, y = int(random_input_element.bounding_box()["x"]), int(random_input_element.bounding_box()["y"])
     input_type = ['Shift', 'Backspace', 'Control', 'Escape', 'Alt', 'Delete', 'Enter']
     random_input_type = random.choice(input_type)
     try:
@@ -68,7 +68,7 @@ def send_keys(page, indication, delay):
                 random_input_element,
             )
             random_input_element.press(random_input_type)
-            page.wait_for_load_state("networkidle")
+            # page.wait_for_load_state("networkidle")
     except Exception:
         LogTyper.logger.exception("Error: Sent key failed")
         exit()
