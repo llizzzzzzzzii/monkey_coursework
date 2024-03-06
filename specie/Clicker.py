@@ -4,7 +4,9 @@ from logi.loger import LogClicker
 
 def find_locators(page):
     clickable_elements = page.query_selector_all('button, a, input, [role="button"]')
-    visible_clickable_elements = [element for element in clickable_elements if element.is_visible()]
+    viewport_height = page.viewport_size['height']
+    visible_clickable_elements = [element for element in clickable_elements if element.is_visible() and
+                        element.bounding_box()['y'] >= 0 and element.bounding_box()['y'] <= viewport_height]
     return visible_clickable_elements
 
 def draw_indicator(page, x, y):
