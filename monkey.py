@@ -23,7 +23,6 @@ class Monkey:
         self.page.wait_for_load_state('domcontentloaded')
         count_species = self.count
         current = 0
-        Clicker.click(self.page, self.indication)
         while current < count_species:
             actions = self.species
             for action in actions:
