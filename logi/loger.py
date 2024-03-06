@@ -21,6 +21,14 @@ def set_logger(logger):
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
+class LogError:
+    logger = logging.getLogger("Error")
+    logger.setLevel(logging.INFO)
+    handler = logging.StreamHandler()
+    formatter = logging.Formatter('%(name)s: %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
 class LogClicker:
     logger = logging.getLogger("Clicker")
     set_logger(logger)

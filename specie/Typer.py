@@ -1,6 +1,7 @@
 import random
 import time
 from logi.loger import LogTyper
+from logi.loger import LogError
 
 def find_locators(page):
     input_elements = page.query_selector_all('input, textarea, [contenteditable=true]')
@@ -40,7 +41,7 @@ def send_text(page, indication, delay):
                 random_input_element.fill(random_text)
                 # page.wait_for_load_state("networkidle")
     except Exception:
-        LogTyper.logger.exception("Error: Typed text failed")
+        LogError.logger.exception("Typed text failed")
         exit()
     LogTyper.logger.info(f"Typed {random_text} into a text element at position {x, y}")
     time.sleep(delay / 1000)
@@ -70,7 +71,7 @@ def send_keys(page, indication, delay):
             random_input_element.press(random_input_type)
             # page.wait_for_load_state("networkidle")
     except Exception:
-        LogTyper.logger.exception("Error: Sent key failed")
+        LogError.logger.exception("Sent key failed")
         exit()
     LogTyper.logger.info(f"Sent {random_input_type} key to a text element at position {x, y}")
     time.sleep(delay / 1000)
