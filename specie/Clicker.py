@@ -11,7 +11,7 @@ def find_locators(page):
 
 def draw_indicator(page, x, y):
     script = (f'document.body.insertAdjacentHTML("beforeend", "<div style=\'position: absolute; left: {x}px; '
-              f'top: {y}px; width: 10px; height: 10px; background-color: red; border-radius: 50%;\'></div>");')
+              f'top: {y}px; width: 15px; height: 15px; background-color: red; border-radius: 7.5px; opacity: 0.7;\'></div>");')
     page.evaluate(script)
     time.sleep(0.7)
     script_remove = 'document.body.lastChild.remove();'
