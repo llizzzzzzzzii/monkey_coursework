@@ -3,6 +3,8 @@ from specie.Typer import send_keys
 from specie.Typer import send_text
 from specie.Typer import get_random_action
 from specie import Clicker
+import time
+
 
 class Monkey:
     def __init__(self, url, page, count=500, species=None, delay=0, indication=False, ignore_errors=False,
@@ -30,13 +32,16 @@ class Monkey:
                     if get_random_action() == 'text':
                         send_text(self.page, self.indication, self.restricted_page)
                         current += 1
+                        time.sleep(self.delay)
                     else:
                         send_keys(self.page, self.indication, self.restricted_page)
                         current += 1
+                        time.sleep(self.delay)
                 if action == 'clicker':
                     click_action = Clicker.random_action()
                     click_action(self.page, self.indication, self.restricted_page)
                     current += 1
+                    time.sleep(self.delay)
                 if count_species == current:
                     break
 
