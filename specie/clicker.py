@@ -9,20 +9,33 @@ def blocking_movement(page, element):
 
 
 def find_locators(page):
+    page.wait_for_load_state("load")
     clickable_elements = page.query_selector_all('button, a, input, input[role="button"]')
     viewport_height = page.viewport_size['height']
     visible_clickable_elements = [element for element in clickable_elements if element.is_visible() and
-                                  element.bounding_box()['y'] >= 0 and element.bounding_box()['y'] <= viewport_height]
+                                  element.bounding_box()['y'] >= 0 and element.bounding_box()['y'] <= viewport_height
+                                  and element.get_attribute('type') != 'url']
     return visible_clickable_elements
 
 
-def draw_indicator(page, x, y):
-    script = (f'document.body.insertAdjacentHTML("beforeend", "<div style=\'position: absolute; left: {x}px; '
-              f'top: {y}px; width: 15px; height: 15px; background-color: red; border-radius: 7.5px; opacity: 0.7;\'></div>");')
-    page.evaluate(script)
-    time.sleep(0.7)
-    script_remove = 'document.body.lastChild.remove();'
-    page.evaluate(script_remove)
+def draw_indicator(page, element):
+    box = element.bounding_box()
+    x = box['x'] + box['width'] / 2
+    y = box['y'] + box['height'] / 2
+    page.evaluate('''
+      circle = document.createElement('div');
+      circle.style.width = '15px';
+      circle.style.height = '15px';
+      circle.style.borderRadius = '50%';
+      circle.style.backgroundColor = 'rgba(255, 0, 0, 0.7)';
+      circle.style.position = 'absolute';
+      circle.style.left = '{}px';
+      circle.style.top = '{}px';
+      circle.style.zIndex = '10000';
+      circle.style.pointerEvents = 'none';
+      document.body.appendChild(circle);
+      setTimeout(() => circle.remove(), 1000);
+    '''.format(x, y))
 
 
 def random_action():
@@ -48,7 +61,7 @@ def click(page, indication, restricted_page):
         if restricted_page:
             blocking_movement(page, element)
         if indication:
-            draw_indicator(page, x, y)
+            draw_indicator(page, element)
         element.click()
     except Exception:
         LogError.logger.exception("Click failed")
@@ -62,8 +75,8 @@ def double_click(page, indication, restricted_page):
         if restricted_page:
             blocking_movement(page, element)
         if indication:
-            draw_indicator(page, x, y)
-            draw_indicator(page, x, y)
+            draw_indicator(page, element)
+            draw_indicator(page, element)
         element.dblclick()
     except Exception:
         LogError.logger.exception("Double click failed")
@@ -77,7 +90,7 @@ def multiple_click(page, indication, restricted_page):
     try:
         for i in range(count):
             if indication:
-                draw_indicator(page, x, y)
+                draw_indicator(page, element)
             if restricted_page:
                 blocking_movement(page, element)
             element.click()
@@ -91,7 +104,7 @@ def hover(page, indication, restricted_page):
     element, x, y = get_element_and_coordinate(page)
     try:
         if indication:
-            draw_indicator(page, x, y)
+            draw_indicator(page, element)
         element.hover()
     except Exception:
         LogError.logger.exception("Hover failed")
@@ -103,7 +116,7 @@ def click_and_hold(page, indication, restricted_page):
     element, x, y = get_element_and_coordinate(page)
     try:
         if indication:
-            draw_indicator(page, x, y)
+            draw_indicator(page, element)
         if restricted_page:
             blocking_movement(page, element)
         page.mouse.move(x, y)

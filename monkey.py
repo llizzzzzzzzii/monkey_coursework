@@ -1,8 +1,8 @@
 from logi.loger import LogMonkey
-from specie.Typer import send_keys
-from specie.Typer import send_text
-from specie.Typer import get_random_action
-from specie import Clicker
+from specie.typer import send_keys
+from specie.typer import send_text
+from specie.typer import get_random_action
+from specie import clicker
 import time
 
 
@@ -38,7 +38,7 @@ class Monkey:
                         current += 1
                         time.sleep(self.delay)
                 if action == 'clicker':
-                    click_action = Clicker.random_action()
+                    click_action = clicker.random_action()
                     click_action(self.page, self.indication, self.restricted_page)
                     current += 1
                     time.sleep(self.delay)

@@ -12,12 +12,14 @@ def blocking_movement(page, element):
 
 
 def find_locators(page):
+    page.wait_for_load_state("networkidle")
     input_elements = page.query_selector_all('input, textarea, div[contenteditable=true]')
     viewport_height = page.viewport_size['height']
     visible_input_elements = [element for element in input_elements if
                               element.is_visible() and element.bounding_box()['y'] >= 0 and
                               element.bounding_box()['y'] <= viewport_height and
-                              element.get_attribute("type") not in ["radio", "checkbox", "submit", "button"]]
+                              element.get_attribute("type") not in ["radio", "checkbox", "submit", "button", "file"]
+                              and element.get_attribute('type') != 'url']
     return visible_input_elements
 
 
