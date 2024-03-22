@@ -1,8 +1,9 @@
-from logi.loger import LogMonkey
+from monkey_logging.monkey_logger import LogMonkey
 from specie.typer import send_keys
 from specie.typer import send_text
 from specie.typer import get_random_action
 from specie import clicker
+from specie.scroller import scroll_to_random_position
 import time
 
 
@@ -41,6 +42,10 @@ class Monkey:
                     click_action = clicker.random_action()
                     click_action(self.page, self.indication, self.restricted_page)
                     current += 1
+                    time.sleep(self.delay)
+                if action=='scroller':
+                    scroll_to_random_position(self.page)
+                    current+=1
                     time.sleep(self.delay)
                 if count_species == current:
                     break
