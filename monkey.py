@@ -3,6 +3,7 @@ from specie.typer import send_keys
 from specie.typer import send_text
 from specie.typer import get_random_action
 from specie import clicker
+from specie.resizer import resize_page
 import time
 
 
@@ -40,6 +41,10 @@ class Monkey:
                 if action == 'clicker':
                     click_action = clicker.random_action()
                     click_action(self.page, self.indication, self.restricted_page)
+                    current += 1
+                    time.sleep(self.delay)
+                if action == 'resizer':
+                    resize_page(self.page)
                     current += 1
                     time.sleep(self.delay)
                 if count_species == current:
