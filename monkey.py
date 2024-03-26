@@ -4,6 +4,7 @@ from specie.typer import send_text
 from specie.typer import get_random_action
 from specie import clicker
 from specie.scroller import scroll_to_random_position
+from specie.reloader import reload_page
 import time
 
 
@@ -46,6 +47,10 @@ class Monkey:
                 if action=='scroller':
                     scroll_to_random_position(self.page)
                     current+=1
+                    time.sleep(self.delay)
+                if action == 'reloader':
+                    reload_page(self.page)
+                    current += 1
                     time.sleep(self.delay)
                 if count_species == current:
                     break
