@@ -14,7 +14,7 @@ class Monkey:
         self.url = url
         self.page = page
         self.count = count
-        self.species = species if species else ['clicker', 'typer']
+        self.species = species if species else ['clicker', 'typer','scroller','reloader']
         self.delay = delay
         self.indication = indication
         self.ignore_errors = ignore_errors

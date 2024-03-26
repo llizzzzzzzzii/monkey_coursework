@@ -1,8 +1,13 @@
 import random
 import time
+import string
 from monkey_logging.monkey_logger import LogTyper
 from monkey_logging.monkey_logger import LogError
 
+def get_random_string():
+    length = random.randint(1, 255)
+    random_string = ''.join(random.choices(string.ascii_letters + string.digits + string.punctuation, k=length))
+    return random_string
 
 def blocking_movement(page, element):
     page.evaluate(
@@ -25,7 +30,7 @@ def find_locators(page):
 
 def send_text(page, indication, restricted_page):
     page.wait_for_load_state("networkidle")
-    random_text = ''.join(random.choices('12345678910!@#$%^&*(!"№;%:?*()=+abcdefghijklmnopqrstuvwxyz', k=5))
+    random_text = get_random_string()
     random_input_element = random.choice(find_locators(page))
     x, y = int(random_input_element.bounding_box()["x"]), int(random_input_element.bounding_box()["y"])
     try:
