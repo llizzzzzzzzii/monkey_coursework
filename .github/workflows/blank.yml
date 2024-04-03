@@ -32,10 +32,6 @@ jobs:
         run: |
             pip install colorlog
 
-      - name: Install pyautogui
-        run: |
-            pip install pyautogui
-
         
       - name: Test with pytest
         run: |
