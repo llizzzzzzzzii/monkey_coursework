@@ -23,8 +23,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest
           
-      - name: Ensure browsers are installed
-        run: python -m playwright install --with-deps
+      - name: Install playwright
+        run: |
+            pip install pytest-playwright
+            playwright install
         
       - name: Test with pytest
         run: |
