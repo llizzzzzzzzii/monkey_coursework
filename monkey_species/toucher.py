@@ -1,5 +1,10 @@
 import random
 
+def blocking_movement(page, initial_url):
+    current_url = page.url
+    if current_url != initial_url:
+        page.goto(initial_url)
+
 
 def find_locators(page):
     page.wait_for_load_state("load")
@@ -30,10 +35,13 @@ def draw_indicator(page, element):
     '''.format(x, y))
 
 
-def touch(page, indication):
+def touch(page, indication, restricted_page):
     page.wait_for_load_state("load")
+    initial_url = page.url
     visible_elements = find_locators(page)
     element = random.choice(visible_elements)
     if indication:
         draw_indicator(page, element)
     element.tap()
+    if restricted_page:
+        blocking_movement(page, initial_url)
