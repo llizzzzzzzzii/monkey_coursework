@@ -1,8 +1,8 @@
 import random
 import time
 import string
-from monkey_logging.monkey_logger.monkey_logger import LogTyper
-from monkey_logging.monkey_logger.monkey_logger import LogError
+from monkey_logging.monkey_logger import LogTyper
+from monkey_logging.monkey_logger import LogError
 
 def get_random_string():
     length = random.randint(1, 255)
