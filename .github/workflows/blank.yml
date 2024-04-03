@@ -18,9 +18,11 @@ jobs:
             ruff --output-format=github .
         continue-on-error: true
 
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
       - name: Install dependencies
         run: |
-          playwright install
           python -m pip install --upgrade pip
           pip install pytest
       - name: Test with pytest
