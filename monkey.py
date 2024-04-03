@@ -1,11 +1,11 @@
 from monkey_logging.monkey_logger import LogMonkey
-from specie.typer import send_keys
-from specie.typer import send_text
-from specie.typer import get_random_action
-from specie import clicker
-from specie.scroller import scroll_to_random_position
-from specie.reloader import reload_page
-from specie.toucher import touch
+from monkey_species.typer import send_keys
+from monkey_species.typer import send_text
+from monkey_species.typer import get_random_action
+from monkey_species import clicker
+from monkey_species.scroller import scroll_to_random_position
+from monkey_species.reloader import reload_page
+from monkey_species.toucher import touch
 import time
 
 
