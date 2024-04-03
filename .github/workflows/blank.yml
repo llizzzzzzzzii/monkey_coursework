@@ -27,6 +27,10 @@ jobs:
         run: |
             pip install pytest-playwright
             playwright install
+            
+      - name: Install colorlog
+        run: |
+            pip install colorlog
         
       - name: Test with pytest
         run: |
