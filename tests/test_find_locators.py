@@ -1,5 +1,5 @@
 from playwright.sync_api import sync_playwright
-from monkey_species.clicker import find_locators
+from monkey_species.clicker.clicker import find_locators
 import pytest
 
 @pytest.fixture
