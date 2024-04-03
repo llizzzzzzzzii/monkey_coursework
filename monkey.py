@@ -1,9 +1,11 @@
-from logi.loger import LogMonkey
+from monkey_logging.monkey_logger import LogMonkey
 from specie.typer import send_keys
 from specie.typer import send_text
 from specie.typer import get_random_action
 from specie import clicker
-from specie.resizer import resize_page
+from specie.scroller import scroll_to_random_position
+from specie.reloader import reload_page
+from specie.toucher import touch
 import time
 
 
@@ -13,7 +15,7 @@ class Monkey:
         self.url = url
         self.page = page
         self.count = count
-        self.species = species if species else ['clicker', 'typer']
+        self.species = species if species else ['clicker', 'typer','scroller','reloader']
         self.delay = delay
         self.indication = indication
         self.ignore_errors = ignore_errors
@@ -43,8 +45,16 @@ class Monkey:
                     click_action(self.page, self.indication, self.restricted_page)
                     current += 1
                     time.sleep(self.delay)
-                if action == 'resizer':
-                    resize_page(self.page)
+                if action == 'scroller':
+                    scroll_to_random_position(self.page)
+                    current += 1
+                    time.sleep(self.delay)
+                if action == 'reloader':
+                    reload_page(self.page)
+                    current += 1
+                    time.sleep(self.delay)
+                if action == 'toucher':
+                    touch(self.page, self.indication)
                     current += 1
                     time.sleep(self.delay)
                 if count_species == current:
