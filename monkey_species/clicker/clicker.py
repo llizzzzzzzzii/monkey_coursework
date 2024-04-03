@@ -1,7 +1,7 @@
 import time
 import random
-from monkey_logging.monkey_logger import LogClicker
-from monkey_logging.monkey_logger import LogError
+from monkey_logging.monkey_logger.monkey_logger import LogClicker
+from monkey_logging.monkey_logger.monkey_logger import LogError
 
 
 def blocking_movement(page, element):
