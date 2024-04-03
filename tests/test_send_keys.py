@@ -1,6 +1,6 @@
 from playwright.sync_api import sync_playwright
 import pytest
-from monkey_species.typer import send_keys
+from monkey_species.typer.typer import send_keys
 
 
 @pytest.fixture
