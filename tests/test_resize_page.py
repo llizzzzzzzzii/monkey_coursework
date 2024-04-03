@@ -1,6 +1,6 @@
 from playwright.sync_api import sync_playwright
 import pytest
-from monkey_species.resizer import resize_page
+from monkey_species.resizer.resizer import resize_page
 
 
 @pytest.fixture
