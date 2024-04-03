@@ -1,4 +1,4 @@
-from monkey_logging.monkey_logger import LogReloader
+from monkey_logging.monkey_logger import LogToucher
 from monkey_logging.monkey_logger import LogError
 import random
 
@@ -48,6 +48,6 @@ def touch(page, indication, restricted_page):
         element.tap()
         if restricted_page:
             blocking_movement(page, initial_url)
-        LogReloader.logger.info(f"Tapped on an element at position {x, y}")
+        LogToucher.logger.info(f"Tapped on an element at position {x, y}")
     except Exception:
         LogError.logger.error("Touch failed")

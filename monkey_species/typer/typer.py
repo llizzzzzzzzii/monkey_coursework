@@ -53,10 +53,9 @@ def send_text(page, indication, restricted_page):
                     random_input_element,
                 )
             random_input_element.fill(random_text)
+            LogTyper.logger.info(f"Typed {random_text} into a text element at position {x, y}")
     except Exception:
-        LogError.logger.exception("Typed text failed")
-        exit()
-    LogTyper.logger.info(f"Typed {random_text} into a text element at position {x, y}")
+        LogError.logger.error("Typed text failed")
 
 
 def send_keys(page, indication, restricted_page):
@@ -64,8 +63,7 @@ def send_keys(page, indication, restricted_page):
     page.wait_for_load_state("networkidle")
     random_input_element = random.choice(find_locators(page))
     x, y = int(random_input_element.bounding_box()["x"]), int(random_input_element.bounding_box()["y"])
-    input_type = ['Enter']
-    # input_type = ['Shift', 'Backspace', 'Control', 'Escape', 'Alt', 'Delete', 'Enter']
+    input_type = ['Shift', 'Backspace', 'Control', 'Escape', 'Alt', 'Delete', 'Enter']
     random_input_type = random.choice(input_type)
     try:
         if random_input_element:
@@ -87,10 +85,9 @@ def send_keys(page, indication, restricted_page):
             random_input_element.press(random_input_type)
             if restricted_page:
                 blocking_movement(page, initial_url)
+            LogTyper.logger.info(f"Sent {random_input_type} key to a text element at position {x, y}")
     except Exception:
-        LogError.logger.exception("Sent key failed")
-        exit()
-    LogTyper.logger.info(f"Sent {random_input_type} key to a text element at position {x, y}")
+        LogError.logger.error("Sent key failed")
 
 
 def get_random_action():
