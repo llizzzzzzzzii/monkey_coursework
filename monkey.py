@@ -59,7 +59,7 @@ class Monkey:
                     current += 1
                     time.sleep(self.delay)
                 if action == 'toucher':
-                    touch(self.page, self.indication)
+                    touch(self.page, self.indication, self.restricted_page)
                     current += 1
                     time.sleep(self.delay)
                 if count_species == current:
