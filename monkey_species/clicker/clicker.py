@@ -41,7 +41,6 @@ def draw_indicator(page, element):
 
 
 def random_action():
-    # actions = [click]
     actions = [hover, click, double_click, click_and_hold]
     get_random = random.choice(actions)
     return get_random
