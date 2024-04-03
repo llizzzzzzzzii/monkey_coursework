@@ -1,11 +1,8 @@
 import random
-import tkinter as tk
-
+import pyautogui
 
 def resize_page(page):
-    root = tk.Tk()
-    screen_width = root.winfo_screenwidth()
-    screen_height = root.winfo_screenheight()
+    screen_width, screen_height = pyautogui.size()
     new_width = random.randint(800, screen_width)
     new_height = random.randint(600, screen_height)
     draw_rect = f"""
