@@ -6,7 +6,7 @@ from monkey_species.typer.typer import send_keys
 @pytest.fixture
 def browser_page():
     with sync_playwright() as p:
-        browser = p.chromium.launch()
+        browser = p.chromium.launch(headless=False)
         page = browser.new_page()
         yield page
         browser.close()
