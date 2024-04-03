@@ -27,7 +27,12 @@ jobs:
         run: |
             pip install pytest-playwright
             playwright install
+            
+      - name: Install colorlog
+        run: |
+            pip install colorlog
+
         
       - name: Test with pytest
         run: |
-          pytest --verbosity=2 --showlocals
+          python -m pytest
