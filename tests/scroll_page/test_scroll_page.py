@@ -6,7 +6,7 @@ from monkey_species.scroller.scroller import scroll_to_random_position
 @pytest.fixture
 def browser_page():
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch()
         page = browser.new_page()
         yield page
         browser.close()
