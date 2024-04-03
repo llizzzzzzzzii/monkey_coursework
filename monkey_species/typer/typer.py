@@ -9,11 +9,10 @@ def get_random_string():
     random_string = ''.join(random.choices(string.ascii_letters + string.digits + string.punctuation, k=length))
     return random_string
 
-def blocking_movement(page, element):
-    page.evaluate(
-        '(element) => { element.addEventListener("keydown", (e) => { if (!element.classList.contains("no-enter") && '
-        'e.key === "Enter") { e.preventDefault(); e.stopPropagation(); } }); }',
-        element)
+def blocking_movement(page, initial_url):
+    current_url = page.url
+    if current_url != initial_url:
+        page.goto(initial_url)
 
 
 def find_locators(page):
@@ -39,8 +38,6 @@ def send_text(page, indication, restricted_page):
                     "value") != "":
                 random_input_element.fill("")
             page.wait_for_load_state("networkidle")
-            if restricted_page:
-                blocking_movement(page, random_input_element)
             if indication is True:
                 page.evaluate(
                     """(element) => {
@@ -63,20 +60,15 @@ def send_text(page, indication, restricted_page):
 
 
 def send_keys(page, indication, restricted_page):
+    initial_url = page.url
     page.wait_for_load_state("networkidle")
     random_input_element = random.choice(find_locators(page))
     x, y = int(random_input_element.bounding_box()["x"]), int(random_input_element.bounding_box()["y"])
-    input_type = ['Shift', 'Backspace', 'Control', 'Escape', 'Alt', 'Delete', 'Enter']
+    input_type = ['Enter']
+    # input_type = ['Shift', 'Backspace', 'Control', 'Escape', 'Alt', 'Delete', 'Enter']
     random_input_type = random.choice(input_type)
     try:
         if random_input_element:
-            if restricted_page:
-                if random_input_element.get_attribute("value") is not None and random_input_element.get_attribute(
-                        "value") != "":
-                    random_input_element.fill("")
-
-                blocking_movement(page, random_input_element)
-
             page.wait_for_load_state("networkidle")
             if indication is True:
                 page.evaluate(
@@ -93,6 +85,8 @@ def send_keys(page, indication, restricted_page):
                     random_input_element,
                 )
             random_input_element.press(random_input_type)
+            if restricted_page:
+                blocking_movement(page, initial_url)
     except Exception:
         LogError.logger.exception("Sent key failed")
         exit()
