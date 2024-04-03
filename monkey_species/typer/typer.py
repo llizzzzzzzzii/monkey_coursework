@@ -28,11 +28,12 @@ def find_locators(page):
 
 
 def send_text(page, indication, restricted_page, ignore_errors):
-    page.wait_for_load_state("networkidle")
-    random_text = get_random_string()
-    random_input_element = random.choice(find_locators(page))
-    x, y = int(random_input_element.bounding_box()["x"]), int(random_input_element.bounding_box()["y"])
     try:
+        page.wait_for_load_state("networkidle")
+        random_text = get_random_string()
+        random_input_element = random.choice(find_locators(page))
+        x, y = int(random_input_element.bounding_box()["x"]), int(random_input_element.bounding_box()["y"])
+
         if random_input_element.get_attribute("value") is not None and random_input_element.get_attribute(
                 "value") != "":
             random_input_element.fill("")
@@ -63,13 +64,13 @@ def send_text(page, indication, restricted_page, ignore_errors):
 
 
 def send_keys(page, indication, restricted_page, ignore_errors):
-    initial_url = page.url
-    page.wait_for_load_state("networkidle")
-    random_input_element = random.choice(find_locators(page))
-    x, y = int(random_input_element.bounding_box()["x"]), int(random_input_element.bounding_box()["y"])
-    input_type = ['Shift', 'Backspace', 'Control', 'Escape', 'Alt', 'Delete', 'Enter']
-    random_input_type = random.choice(input_type)
     try:
+        initial_url = page.url
+        page.wait_for_load_state("networkidle")
+        random_input_element = random.choice(find_locators(page))
+        x, y = int(random_input_element.bounding_box()["x"]), int(random_input_element.bounding_box()["y"])
+        input_type = ['Shift', 'Backspace', 'Control', 'Escape', 'Alt', 'Delete', 'Enter']
+        random_input_type = random.choice(input_type)
         page.wait_for_load_state("networkidle")
         if indication is True:
             page.evaluate(
