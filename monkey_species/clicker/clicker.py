@@ -41,7 +41,7 @@ def draw_indicator(page, element):
 
 
 def random_action():
-    actions = [hover, click, double_click, click_and_hold]
+    actions = [hover, click, double_click, multiple_click, click_and_hold]
     get_random = random.choice(actions)
     return get_random
 
@@ -102,9 +102,10 @@ def multiple_click(page, indication, restricted_page, ignore_errors):
         for i in range(count):
             if indication:
                 draw_indicator(page, element)
-            element.click()
-            if restricted_page:
-                blocking_movement(page, initial_url)
+                time.sleep(1)
+        element.click(click_count=count)
+        if restricted_page:
+            blocking_movement(page, initial_url)
         LogClicker.logger.info(f"Clicked at position {x, y} {count} times")
     except Exception as e:
         LogClicker.logger.error("Multiple clicks failed")
@@ -134,12 +135,7 @@ def click_and_hold(page, indication, restricted_page, ignore_errors):
     try:
         if indication:
             draw_indicator(page, element)
-        page.mouse.move(x, y)
-        page.mouse.down()
-        time.sleep(0.7)
-        page.mouse.up()
-        time.sleep(1)
-        page.wait_for_load_state("load")
+        element.click(delay=3000)
         if restricted_page:
             blocking_movement(page, initial_url)
         LogClicker.logger.info(f"Clicked and held at position {x, y}")
