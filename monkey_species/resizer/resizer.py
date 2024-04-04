@@ -3,7 +3,8 @@ from monkey_logging.monkey_logger import LogError
 import random
 import pyautogui
 
-def resize_page(page):
+
+def resize_page(page, ignore_errors):
     try:
         screen_width, screen_height = pyautogui.size()
         new_width = random.randint(800, screen_width)
@@ -25,5 +26,9 @@ def resize_page(page):
         page.evaluate(draw_rect)
         page.set_viewport_size({"width": new_width, "height": new_height})
         LogResizer.logger.info(f"Resized to {new_width, new_height}")
-    except Exception:
-        LogError.logger.error("Resiz failed")
+    except Exception as e:
+        LogResizer.logger.error("Error: Resize failed")
+        LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
+        if not ignore_errors:
+            return False
+    return True

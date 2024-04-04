@@ -27,7 +27,7 @@ class LogError:
     logger = logging.getLogger("Error")
     logger.setLevel(logging.INFO)
     handler = logging.StreamHandler()
-    formatter = logging.Formatter('%(name)s: %(message)s')
+    formatter = logging.Formatter('%(name)s: %(message)s\n\tat %(pathname)s:%(lineno)d:%(funcName)s')
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 

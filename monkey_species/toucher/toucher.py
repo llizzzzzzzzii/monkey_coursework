@@ -34,7 +34,7 @@ def draw_indicator(page, x, y):
     '''.format(x, y))
 
 
-def touch(page, indication, restricted_page):
+def touch(page, indication, restricted_page, ignore_errors):
     try:
         page.wait_for_load_state("load")
         initial_url = page.url
@@ -49,5 +49,9 @@ def touch(page, indication, restricted_page):
         if restricted_page:
             blocking_movement(page, initial_url)
         LogToucher.logger.info(f"Tapped on an element at position {x, y}")
-    except Exception:
-        LogError.logger.error("Touch failed")
+    except Exception as e:
+        LogToucher.logger.error("Error: Touch failed")
+        LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
+        if not ignore_errors:
+            return False
+    return True
