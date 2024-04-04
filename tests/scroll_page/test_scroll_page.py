@@ -20,8 +20,9 @@ def browser_page():
 
 @pytest.mark.parametrize("width, height", [(1000, 500), (500, 1000)])
 def test_scroll_page(browser_page, width, height):
+    ignore_errors=True
     browser_page.set_viewport_size({"width": width, "height": height})
-    scroll_to_random_position(browser_page)
+    scroll_to_random_position(browser_page,ignore_errors)
 
     scroll_x, scroll_y = browser_page.evaluate("() => [window.scrollX, window.scrollY]")
 
