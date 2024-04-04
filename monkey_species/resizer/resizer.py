@@ -3,6 +3,7 @@ from monkey_logging.monkey_logger import LogError
 import random
 import pyautogui
 
+
 def resize_page(page, ignore_errors):
     try:
         screen_width, screen_height = pyautogui.size()

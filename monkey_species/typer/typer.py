@@ -33,7 +33,6 @@ def send_text(page, indication, restricted_page, ignore_errors):
         random_text = get_random_string()
         random_input_element = random.choice(find_locators(page))
         x, y = int(random_input_element.bounding_box()["x"]), int(random_input_element.bounding_box()["y"])
-
         if random_input_element.get_attribute("value") is not None and random_input_element.get_attribute(
                 "value") != "":
             random_input_element.fill("")
@@ -60,7 +59,6 @@ def send_text(page, indication, restricted_page, ignore_errors):
         if not ignore_errors:
             return False
     return True
-
 
 
 def send_keys(page, indication, restricted_page, ignore_errors):

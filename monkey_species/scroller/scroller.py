@@ -19,4 +19,3 @@ def scroll_to_random_position(page, ignore_errors):
         if not ignore_errors:
             return False
     return True
-
