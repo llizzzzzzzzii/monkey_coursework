@@ -36,6 +36,21 @@ class LogClicker:
     logger = logging.getLogger("Clicker")
     set_logger(logger)
 
+class LogReloader:
+    logger = logging.getLogger("Reloader")
+    set_logger(logger)
+
+class LogResizer:
+    logger = logging.getLogger("Resizer")
+    set_logger(logger)
+
+class LogScroller:
+    logger = logging.getLogger("Scroller")
+    set_logger(logger)
+
+class LogToucher:
+    logger = logging.getLogger("Toucher")
+    set_logger(logger)
 
 class LogTyper:
     logger = logging.getLogger("Typer")

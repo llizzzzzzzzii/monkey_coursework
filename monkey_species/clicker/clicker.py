@@ -1,7 +1,7 @@
 import time
 import random
-from monkey_logging.monkey_logger.monkey_logger import LogClicker
-from monkey_logging.monkey_logger.monkey_logger import LogError
+from monkey_logging.monkey_logger import LogClicker
+from monkey_logging.monkey_logger import LogError
 
 
 def blocking_movement(page, initial_url):
@@ -67,7 +67,7 @@ def click(page, indication, restricted_page):
         if restricted_page:
             blocking_movement(page, initial_url)
     except Exception:
-        LogError.logger.exception("Click failed")
+        LogError.logger.error("Click failed")
         exit()
     LogClicker.logger.info(f"Clicked at position {x, y}")
 

@@ -2,7 +2,7 @@ from monkey_logging.monkey_logger import LogMonkey
 from monkey_species.typer.typer import send_keys
 from monkey_species.typer.typer import send_text
 from monkey_species.typer.typer import get_random_action
-from monkey_species import clicker
+from monkey_species.clicker import clicker
 from monkey_species.resizer.resizer import resize_page
 from monkey_species.scroller.scroller import scroll_to_random_position
 from monkey_species.reloader.reloader import reload_page

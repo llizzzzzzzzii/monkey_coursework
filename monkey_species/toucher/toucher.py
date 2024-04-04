@@ -1,3 +1,5 @@
+from monkey_logging.monkey_logger import LogToucher
+from monkey_logging.monkey_logger import LogError
 import random
 
 def blocking_movement(page, initial_url):
@@ -15,10 +17,7 @@ def find_locators(page):
                                   and element.get_attribute('type') != 'url']
     return visible_clickable_elements
 
-def draw_indicator(page, element):
-    box = element.bounding_box()
-    x = box['x'] + box['width'] / 2
-    y = box['y'] + box['height'] / 2
+def draw_indicator(page, x, y):
     page.evaluate('''
       circle = document.createElement('div');
       circle.style.width = '15px';
@@ -36,12 +35,19 @@ def draw_indicator(page, element):
 
 
 def touch(page, indication, restricted_page):
-    page.wait_for_load_state("load")
-    initial_url = page.url
-    visible_elements = find_locators(page)
-    element = random.choice(visible_elements)
-    if indication:
-        draw_indicator(page, element)
-    element.tap()
-    if restricted_page:
-        blocking_movement(page, initial_url)
+    try:
+        page.wait_for_load_state("load")
+        initial_url = page.url
+        visible_elements = find_locators(page)
+        element = random.choice(visible_elements)
+        box = element.bounding_box()
+        x = int(box['x'] + box['width'] / 2)
+        y = int(box['y'] + box['height'] / 2)
+        if indication:
+            draw_indicator(page, x, y)
+        element.tap()
+        if restricted_page:
+            blocking_movement(page, initial_url)
+        LogToucher.logger.info(f"Tapped on an element at position {x, y}")
+    except Exception:
+        LogError.logger.error("Touch failed")
