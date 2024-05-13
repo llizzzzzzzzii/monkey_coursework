@@ -27,7 +27,7 @@ class LogError:
     logger = logging.getLogger("Error")
     logger.setLevel(logging.INFO)
     handler = logging.StreamHandler()
-    formatter = logging.Formatter('%(name)s: %(message)s')
+    formatter = logging.Formatter('%(name)s: %(message)s\n\tat %(pathname)s:%(lineno)d:%(funcName)s')
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
@@ -36,6 +36,21 @@ class LogClicker:
     logger = logging.getLogger("Clicker")
     set_logger(logger)
 
+class LogReloader:
+    logger = logging.getLogger("Reloader")
+    set_logger(logger)
+
+class LogResizer:
+    logger = logging.getLogger("Resizer")
+    set_logger(logger)
+
+class LogScroller:
+    logger = logging.getLogger("Scroller")
+    set_logger(logger)
+
+class LogToucher:
+    logger = logging.getLogger("Toucher")
+    set_logger(logger)
 
 class LogTyper:
     logger = logging.getLogger("Typer")
