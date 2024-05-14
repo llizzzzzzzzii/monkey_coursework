@@ -22,7 +22,7 @@ def find_locators(page):
     visible_input_elements = [element for element in input_elements if
                               element.is_visible() and element.bounding_box()['y'] >= 0 and
                               element.bounding_box()['y'] <= viewport_height and
-                              element.get_attribute("type") not in ["radio", "checkbox", "submit", "button", "file"]
+                              element.get_attribute("type") not in ["radio", "checkbox", "submit", "button", "file", "reset"]
                               and element.get_attribute('type') != 'url']
     return visible_input_elements
 
