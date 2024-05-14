@@ -9,6 +9,11 @@ def get_random_string():
     random_string = ''.join(random.choices(string.ascii_letters + string.digits + string.punctuation, k=length))
     return random_string
 
+def get_random_number():
+    length = random.randint(1, 255)
+    random_string = ''.join(random.choices(string.digits, k=length))
+    return random_string
+
 def blocking_movement(page, initial_url):
     current_url = page.url
     if current_url != initial_url:
@@ -22,7 +27,7 @@ def find_locators(page):
     visible_input_elements = [element for element in input_elements if
                               element.is_visible() and element.bounding_box()['y'] >= 0 and
                               element.bounding_box()['y'] <= viewport_height and
-                              element.get_attribute("type") not in ["radio", "checkbox", "submit", "button", "file", "reset"]
+                              element.get_attribute("type") not in ["radio", "checkbox", "submit", "button", "file","reset"]
                               and element.get_attribute('type') != 'url']
     return visible_input_elements
 
@@ -31,6 +36,7 @@ def send_text(page, indication, restricted_page, ignore_errors):
     try:
         page.wait_for_load_state("networkidle")
         random_text = get_random_string()
+        random_number = get_random_number()
         random_input_element = random.choice(find_locators(page))
         x, y = int(random_input_element.bounding_box()["x"]), int(random_input_element.bounding_box()["y"])
         if random_input_element.get_attribute("value") is not None and random_input_element.get_attribute(
@@ -51,7 +57,10 @@ def send_text(page, indication, restricted_page, ignore_errors):
                    }""",
                 random_input_element,
             )
-        random_input_element.fill(random_text)
+        if random_input_element.get_attribute('type') not in 'number':
+            random_input_element.fill(random_text)
+        else:
+            random_input_element.fill(random_number)
         LogTyper.logger.info(f"Typed {random_text} into a text element at position {x, y}")
     except Exception as e:
         LogTyper.logger.error("Error: Typed text failed")
