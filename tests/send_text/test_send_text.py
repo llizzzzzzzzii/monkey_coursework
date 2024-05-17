@@ -22,7 +22,8 @@ def test_send_text(browser_page):
     indication = True
     restricted_page = False
     ignore_errors = True
-    send_text(browser_page, indication, restricted_page,ignore_errors)
+    color = 'blue'
+    send_text(browser_page, indication, restricted_page,ignore_errors, color)
     input_value = browser_page.evaluate('''() => {
             return document.querySelector('input').value;
         }''')
