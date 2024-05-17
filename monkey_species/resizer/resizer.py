@@ -4,7 +4,7 @@ import random
 import pyautogui
 
 
-def resize_page(page, ignore_errors):
+def resize_page(page, ignore_errors,color):
     try:
         screen_width, screen_height = pyautogui.size()
         new_width = random.randint(800, screen_width)
@@ -16,7 +16,7 @@ def resize_page(page, ignore_errors):
             rect.style.left = '20px';
             rect.style.width = '{new_width - 100}px';
             rect.style.height = '{new_height - 100}px';
-            rect.style.border = '4px solid #ff0000'; // Цвет рамки красный
+            rect.style.border = '4px solid {color}';
             rect.style.opacity = '0.7';
             document.body.appendChild(rect);
                     setTimeout(() => {{

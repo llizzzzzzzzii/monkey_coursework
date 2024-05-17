@@ -13,7 +13,7 @@ import time
 
 class Monkey:
     def __init__(self, url, page, count=500, species=None, delay=0, indication=False, ignore_errors=False,
-                 restricted_page=False):
+                 restricted_page=False, color='red'):
         self.url = url
         self.page = page
         self.count = count
@@ -22,6 +22,7 @@ class Monkey:
         self.indication = indication
         self.ignore_errors = ignore_errors
         self.restricted_page = restricted_page
+        self.color = color
 
     def run(self):
         try:
@@ -36,16 +37,16 @@ class Monkey:
                 for action in actions:
                     if action == 'typer':
                         if get_random_action() == 'text':
-                            result = send_text(self.page, self.indication, self.restricted_page,  self.ignore_errors)
+                            result = send_text(self.page, self.indication, self.restricted_page, self.ignore_errors,self.color)
                             current += 1
                             time.sleep(self.delay)
                         else:
-                            result = send_keys(self.page, self.indication, self.restricted_page,  self.ignore_errors)
+                            result = send_keys(self.page, self.indication, self.restricted_page, self.ignore_errors,self.color)
                             current += 1
                             time.sleep(self.delay)
                     if action == 'clicker':
                         click_action = clicker.random_action()
-                        result = click_action(self.page, self.indication, self.restricted_page, self.ignore_errors)
+                        result = click_action(self.page, self.indication, self.restricted_page, self.ignore_errors,self.color)
                         current += 1
                         time.sleep(self.delay)
                     if action == 'scroller':
@@ -57,11 +58,11 @@ class Monkey:
                         current += 1
                         time.sleep(self.delay)
                     if action == 'resizer':
-                        result = resize_page(self.page, self.ignore_errors)
+                        result = resize_page(self.page, self.ignore_errors,self.color)
                         current += 1
                         time.sleep(self.delay)
                     if action == 'toucher':
-                        result = touch(self.page, self.indication, self.restricted_page, self.ignore_errors)
+                        result = touch(self.page, self.indication, self.restricted_page, self.ignore_errors,self.color)
                         current += 1
                         time.sleep(self.delay)
                     if not result:
