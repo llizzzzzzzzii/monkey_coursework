@@ -1,6 +1,7 @@
 import random
 import time
 import string
+from matplotlib.colors import to_rgba
 from monkey_logging.monkey_logger import LogTyper
 from monkey_logging.monkey_logger import LogError
 
@@ -32,7 +33,7 @@ def find_locators(page):
     visible_input_elements = [element for element in input_elements if
                               (element.is_visible() and 0 <= element.bounding_box()['y'] <= viewport_height and
                                element.get_attribute("type") not in ["radio", "checkbox", "submit", "button", "file",
-                                                                     "reset"]
+                                                                     "reset", 'color']
                                and element.get_attribute('type') != 'url'
                                and element.get_attribute('aria-disabled') != 'true'
                                and element.get_attribute('aria-readonly') != 'true')]
@@ -40,9 +41,11 @@ def find_locators(page):
     return visible_input_elements
 
 
-def send_text(page, indication, restricted_page, ignore_errors):
+def send_text(page, indication, restricted_page, ignore_errors, color):
     try:
         page.wait_for_load_state("networkidle")
+        rgba_color = to_rgba(color, alpha=0.7)
+        rgba_str = f"rgba({int(rgba_color[0] * 255)},{int(rgba_color[1] * 255)},{int(rgba_color[2] * 255)},{rgba_color[3]})"
         random_text = get_random_string()
         random_number = get_random_number()
         visible_elements = find_locators(page)
@@ -52,9 +55,9 @@ def send_text(page, indication, restricted_page, ignore_errors):
         page.wait_for_load_state("networkidle")
         if indication is True:
             page.evaluate(
-                """(element) => {
-                       element.style.backgroundColor = "rgba(255,0,0,0.7)";
-                   }""",
+                f"""(element) => {{
+                       element.style.backgroundColor = "{rgba_str}";
+                   }}""",
                 random_input_element,
             )
             time.sleep(0.5)
@@ -78,7 +81,7 @@ def send_text(page, indication, restricted_page, ignore_errors):
     return True
 
 
-def send_keys(page, indication, restricted_page, ignore_errors):
+def send_keys(page, indication, restricted_page, ignore_errors, color):
     try:
         initial_url = page.url
         page.wait_for_load_state("networkidle")
@@ -86,12 +89,14 @@ def send_keys(page, indication, restricted_page, ignore_errors):
         x, y = int(random_input_element.bounding_box()["x"]), int(random_input_element.bounding_box()["y"])
         input_type = ['Shift', 'Backspace', 'Control', 'Escape', 'Alt', 'Delete', 'Enter']
         random_input_type = random.choice(input_type)
+        rgba_color = to_rgba(color, alpha=0.7)
+        rgba_str = f"rgba({int(rgba_color[0] * 255)},{int(rgba_color[1] * 255)},{int(rgba_color[2] * 255)},{rgba_color[3]})"
         page.wait_for_load_state("networkidle")
         if indication is True:
             page.evaluate(
-                """(element) => {
-                       element.style.backgroundColor = "rgba(255,0,0,0.7)";
-                   }""",
+                f"""(element) => {{
+                       element.style.backgroundColor = "{rgba_str}";
+                   }}""",
                 random_input_element,
             )
             time.sleep(0.5)

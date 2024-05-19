@@ -2,6 +2,7 @@ import time
 import random
 from monkey_logging.monkey_logger import LogClicker
 from monkey_logging.monkey_logger import LogError
+from matplotlib.colors import to_rgba
 
 
 def blocking_movement(page, initial_url):
@@ -20,24 +21,26 @@ def find_locators(page):
     return visible_clickable_elements
 
 
-def draw_indicator(page, element):
+def draw_indicator(page, element, color):
+    rgba_color = to_rgba(color, alpha=0.7)
+    rgba_str = f"rgba({int(rgba_color[0] * 255)},{int(rgba_color[1] * 255)},{int(rgba_color[2] * 255)},{rgba_color[3]})"
     box = element.bounding_box()
     x = box['x'] + box['width'] / 2
     y = box['y'] + box['height'] / 2
-    page.evaluate('''
+    page.evaluate(f'''
       circle = document.createElement('div');
       circle.style.width = '15px';
       circle.style.height = '15px';
       circle.style.borderRadius = '50%';
-      circle.style.backgroundColor = 'rgba(255, 0, 0, 0.7)';
+      circle.style.backgroundColor = '{rgba_str}';
       circle.style.position = 'absolute';
-      circle.style.left = '{}px';
-      circle.style.top = '{}px';
+      circle.style.left = '{x}px';
+      circle.style.top = '{y}px';
       circle.style.zIndex = '10000';
       circle.style.pointerEvents = 'none';
       document.body.appendChild(circle);
       setTimeout(() => circle.remove(), 1000);
-    '''.format(x, y))
+    ''')
 
 
 def random_action():
@@ -57,12 +60,12 @@ def get_element_and_coordinate(page):
     return element, x, y
 
 
-def click(page, indication, restricted_page, ignore_errors):
+def click(page, indication, restricted_page, ignore_errors,color):
     element, x, y = get_element_and_coordinate(page)
     initial_url = page.url
     try:
         if indication:
-            draw_indicator(page, element)
+            draw_indicator(page, element,color)
         element.click()
         if restricted_page:
             blocking_movement(page, initial_url)
@@ -75,13 +78,13 @@ def click(page, indication, restricted_page, ignore_errors):
     return True
 
 
-def double_click(page, indication, restricted_page, ignore_errors):
+def double_click(page, indication, restricted_page, ignore_errors,color):
     element, x, y = get_element_and_coordinate(page)
     initial_url = page.url
     try:
         if indication:
-            draw_indicator(page, element)
-            draw_indicator(page, element)
+            draw_indicator(page, element,color)
+            draw_indicator(page, element,color)
         element.dblclick()
         if restricted_page:
             blocking_movement(page, initial_url)
@@ -94,14 +97,14 @@ def double_click(page, indication, restricted_page, ignore_errors):
     return True
 
 
-def multiple_click(page, indication, restricted_page, ignore_errors):
+def multiple_click(page, indication, restricted_page, ignore_errors,color):
     element, x, y = get_element_and_coordinate(page)
     count = random.randint(3, 10)
     initial_url = page.url
     try:
         for i in range(count):
             if indication:
-                draw_indicator(page, element)
+                draw_indicator(page, element,color)
                 time.sleep(1)
         element.click(click_count=count)
         if restricted_page:
@@ -115,11 +118,11 @@ def multiple_click(page, indication, restricted_page, ignore_errors):
     return True
 
 
-def hover(page, indication, restricted_page, ignore_errors):
+def hover(page, indication, restricted_page, ignore_errors,color):
     element, x, y = get_element_and_coordinate(page)
     try:
         if indication:
-            draw_indicator(page, element)
+            draw_indicator(page, element,color)
         element.hover()
         LogClicker.logger.info(f"Hovered at position {x, y}")
     except Exception as e:
@@ -129,12 +132,12 @@ def hover(page, indication, restricted_page, ignore_errors):
             return False
     return True
 
-def click_and_hold(page, indication, restricted_page, ignore_errors):
+def click_and_hold(page, indication, restricted_page, ignore_errors,color):
     element, x, y = get_element_and_coordinate(page)
     initial_url = page.url
     try:
         if indication:
-            draw_indicator(page, element)
+            draw_indicator(page, element,color)
         element.click(delay=3000)
         if restricted_page:
             blocking_movement(page, initial_url)

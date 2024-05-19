@@ -1,6 +1,8 @@
 from monkey_logging.monkey_logger import LogToucher
 from monkey_logging.monkey_logger import LogError
 import random
+from matplotlib.colors import to_rgba
+
 
 def blocking_movement(page, initial_url):
     current_url = page.url
@@ -17,24 +19,26 @@ def find_locators(page):
                                   and element.get_attribute('type') != 'url']
     return visible_clickable_elements
 
-def draw_indicator(page, x, y):
-    page.evaluate('''
-      circle = document.createElement('div');
-      circle.style.width = '15px';
-      circle.style.height = '15px';
-      circle.style.borderRadius = '50%';
-      circle.style.backgroundColor = 'rgba(255, 0, 0, 0.7)';
-      circle.style.position = 'absolute';
-      circle.style.left = '{}px';
-      circle.style.top = '{}px';
-      circle.style.zIndex = '10000';
-      circle.style.pointerEvents = 'none';
-      document.body.appendChild(circle);
-      setTimeout(() => circle.remove(), 1000);
-    '''.format(x, y))
+def draw_indicator(page, x, y, color):
+    rgba_color = to_rgba(color, alpha=0.7)
+    rgba_str = f"rgba({int(rgba_color[0] * 255)},{int(rgba_color[1] * 255)},{int(rgba_color[2] * 255)},{rgba_color[3]})"
+    page.evaluate(f'''
+          circle = document.createElement('div');
+          circle.style.width = '15px';
+          circle.style.height = '15px';
+          circle.style.borderRadius = '50%';
+          circle.style.backgroundColor = '{rgba_str}';
+          circle.style.position = 'absolute';
+          circle.style.left = '{x}px';
+          circle.style.top = '{y}px';
+          circle.style.zIndex = '10000';
+          circle.style.pointerEvents = 'none';
+          document.body.appendChild(circle);
+          setTimeout(() => circle.remove(), 1000);
+        ''')
 
 
-def touch(page, indication, restricted_page, ignore_errors):
+def touch(page, indication, restricted_page, ignore_errors,color):
     try:
         page.wait_for_load_state("load")
         initial_url = page.url
@@ -44,7 +48,7 @@ def touch(page, indication, restricted_page, ignore_errors):
         x = int(box['x'] + box['width'] / 2)
         y = int(box['y'] + box['height'] / 2)
         if indication:
-            draw_indicator(page, x, y)
+            draw_indicator(page, x, y,color)
         element.tap()
         if restricted_page:
             blocking_movement(page, initial_url)
