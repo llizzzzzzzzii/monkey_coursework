@@ -24,6 +24,12 @@ class Monkey:
         self.restricted_page = restricted_page
         self.color = color
 
+
+    def log_console_message(self, msg):
+        if msg.type == 'error':
+            LogError.logger.error(f"Console error: {msg.text}")
+
+
     def run(self):
         try:
             species_str = ', '.join(specie for specie in self.species)
@@ -32,21 +38,22 @@ class Monkey:
             self.page.wait_for_load_state('domcontentloaded')
             count_species = self.count
             current = 0
+            self.page.on("console", lambda msg: self.log_console_message(msg))
             while current < count_species:
                 actions = self.species
                 for action in actions:
                     if action == 'typer':
                         if get_random_action() == 'text':
-                            result = send_text(self.page, self.indication, self.restricted_page, self.ignore_errors,self.color)
+                            result = send_text(self.page, self.indication, self.restricted_page, self.ignore_errors, self.color)
                             current += 1
                             time.sleep(self.delay)
                         else:
-                            result = send_keys(self.page, self.indication, self.restricted_page, self.ignore_errors,self.color)
+                            result = send_keys(self.page, self.indication, self.restricted_page, self.ignore_errors, self.color)
                             current += 1
                             time.sleep(self.delay)
                     if action == 'clicker':
                         click_action = clicker.random_action()
-                        result = click_action(self.page, self.indication, self.restricted_page, self.ignore_errors,self.color)
+                        result = click_action(self.page, self.indication, self.restricted_page, self.ignore_errors, self.color)
                         current += 1
                         time.sleep(self.delay)
                     if action == 'scroller':

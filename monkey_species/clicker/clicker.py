@@ -60,19 +60,19 @@ def get_element_and_coordinate(page):
     return element, x, y
 
 
-def click(page, indication, restricted_page, ignore_errors,color):
+def click(page, indication, restricted_page, ignore_errors, color):
     element, x, y = get_element_and_coordinate(page)
     initial_url = page.url
     try:
         if indication:
-            draw_indicator(page, element,color)
+            draw_indicator(page, element, color)
         element.click()
         if restricted_page:
             blocking_movement(page, initial_url)
         LogClicker.logger.info(f"Clicked at position {x, y}")
     except Exception as e:
         LogClicker.logger.error("Error: Click failed")
-        LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
+        # LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
         if not ignore_errors:
             return False
     return True
@@ -91,7 +91,7 @@ def double_click(page, indication, restricted_page, ignore_errors,color):
         LogClicker.logger.info(f"Clicked at position {x, y} 2 times")
     except Exception as e:
         LogClicker.logger.error("Double click failed")
-        LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
+        # LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
         if not ignore_errors:
             return False
     return True
@@ -112,7 +112,7 @@ def multiple_click(page, indication, restricted_page, ignore_errors,color):
         LogClicker.logger.info(f"Clicked at position {x, y} {count} times")
     except Exception as e:
         LogClicker.logger.error("Multiple clicks failed")
-        LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
+        # LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
         if not ignore_errors:
             return False
     return True
@@ -127,7 +127,7 @@ def hover(page, indication, restricted_page, ignore_errors,color):
         LogClicker.logger.info(f"Hovered at position {x, y}")
     except Exception as e:
         LogClicker.logger.error("Hover failed")
-        LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
+        # LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
         if not ignore_errors:
             return False
     return True
@@ -144,7 +144,7 @@ def click_and_hold(page, indication, restricted_page, ignore_errors,color):
         LogClicker.logger.info(f"Clicked and held at position {x, y}")
     except Exception as e:
         LogClicker.logger.error("Click and hold failed")
-        LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
+        # LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
         if not ignore_errors:
             return False
     return True

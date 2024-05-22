@@ -75,7 +75,7 @@ def send_text(page, indication, restricted_page, ignore_errors, color):
             LogTyper.logger.info(f"Typed {random_number} into a text element at position {x, y}")
     except Exception as e:
         LogTyper.logger.error("Error: Typed text failed")
-        LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
+        # LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
         if not ignore_errors:
             return False
     return True
@@ -112,7 +112,7 @@ def send_keys(page, indication, restricted_page, ignore_errors, color):
         LogTyper.logger.info(f"Sent {random_input_type} key to a text element at position {x, y}")
     except Exception as e:
         LogTyper.logger.error("Error: Sent key failed")
-        LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
+        # LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
         if not ignore_errors:
             return False
     return True
