@@ -2,6 +2,7 @@ from monkey_logging.monkey_logger import LogToucher
 from monkey_logging.monkey_logger import LogError
 import random
 from matplotlib.colors import to_rgba
+import time
 
 
 def blocking_movement(page, initial_url):
@@ -41,15 +42,16 @@ def draw_indicator(page, x, y, color):
 def touch(page, indication, restricted_page, ignore_errors,color):
     try:
         page.wait_for_load_state("load")
+        time.sleep(0.5)
         initial_url = page.url
         visible_elements = find_locators(page)
         element = random.choice(visible_elements)
         box = element.bounding_box()
-        x = int(box['x'] + box['width'] / 2)
-        y = int(box['y'] + box['height'] / 2)
+        x = int(box['x'])
+        y = int(box['y'])
         if indication:
             draw_indicator(page, x, y,color)
-        element.tap()
+        page.touchscreen.tap(x, y)
         if restricted_page:
             blocking_movement(page, initial_url)
         LogToucher.logger.info(f"Tapped on an element at position {x, y}")

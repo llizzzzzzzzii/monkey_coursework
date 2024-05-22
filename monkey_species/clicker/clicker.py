@@ -54,9 +54,6 @@ def get_element_and_coordinate(page):
     visible_elements = find_locators(page)
     element = random.choice(visible_elements)
     x, y = element.bounding_box()["x"], element.bounding_box()["y"]
-    height, width = element.bounding_box()["height"], element.bounding_box()["width"]
-    x = int(x + width / 2)
-    y = int(y + height / 2)
     return element, x, y
 
 
@@ -65,8 +62,8 @@ def click(page, indication, restricted_page, ignore_errors,color):
     initial_url = page.url
     try:
         if indication:
-            draw_indicator(page, element,color)
-        element.click()
+            draw_indicator(page, element, color)
+        page.mouse.click(x, y)
         if restricted_page:
             blocking_movement(page, initial_url)
         LogClicker.logger.info(f"Clicked at position {x, y}")
@@ -85,7 +82,7 @@ def double_click(page, indication, restricted_page, ignore_errors,color):
         if indication:
             draw_indicator(page, element,color)
             draw_indicator(page, element,color)
-        element.dblclick()
+        page.mouse.dblclick(x, y)
         if restricted_page:
             blocking_movement(page, initial_url)
         LogClicker.logger.info(f"Clicked at position {x, y} 2 times")
@@ -106,7 +103,7 @@ def multiple_click(page, indication, restricted_page, ignore_errors,color):
             if indication:
                 draw_indicator(page, element,color)
                 time.sleep(1)
-        element.click(click_count=count)
+        page.mouse.click(x, y, click_count=count)
         if restricted_page:
             blocking_movement(page, initial_url)
         LogClicker.logger.info(f"Clicked at position {x, y} {count} times")
@@ -123,7 +120,7 @@ def hover(page, indication, restricted_page, ignore_errors,color):
     try:
         if indication:
             draw_indicator(page, element,color)
-        element.hover()
+        page.mouse.move(x, y)
         LogClicker.logger.info(f"Hovered at position {x, y}")
     except Exception as e:
         LogClicker.logger.error("Hover failed")
@@ -132,13 +129,13 @@ def hover(page, indication, restricted_page, ignore_errors,color):
             return False
     return True
 
-def click_and_hold(page, indication, restricted_page, ignore_errors,color):
+def click_and_hold(page, indication, restricted_page, ignore_errors, color):
     element, x, y = get_element_and_coordinate(page)
     initial_url = page.url
     try:
         if indication:
-            draw_indicator(page, element,color)
-        element.click(delay=3000)
+            draw_indicator(page, element, color)
+        page.mouse.click(x, y, delay=3000)
         if restricted_page:
             blocking_movement(page, initial_url)
         LogClicker.logger.info(f"Clicked and held at position {x, y}")
