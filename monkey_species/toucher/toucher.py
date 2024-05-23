@@ -47,8 +47,8 @@ def touch(page, indication, restricted_page, ignore_errors,color):
         visible_elements = find_locators(page)
         element = random.choice(visible_elements)
         box = element.bounding_box()
-        x = int(box['x'])
-        y = int(box['y'])
+        x = box['x']
+        y = box['y']
         if indication:
             draw_indicator(page, x, y,color)
         page.touchscreen.tap(x, y)
