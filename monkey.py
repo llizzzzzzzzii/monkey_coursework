@@ -68,7 +68,7 @@ class Monkey:
                         current += 1
                         time.sleep(self.delay)
                     if action == 'resizer':
-                        result = resize_page(self.page, self.ignore_errors,self.color)
+                        result = resize_page(self.page, self.color)
                         current += 1
                         time.sleep(self.delay)
                     if action == 'toucher':
