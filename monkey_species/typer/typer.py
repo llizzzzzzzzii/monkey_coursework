@@ -43,15 +43,15 @@ def find_locators(page):
 
 def send_text(page, indication, restricted_page, color):
     try:
-        page.wait_for_load_state("networkidle")
+        page.wait_for_load_state("load")
         rgba_color = to_rgba(color, alpha=0.7)
         rgba_str = f"rgba({int(rgba_color[0] * 255)},{int(rgba_color[1] * 255)},{int(rgba_color[2] * 255)},{rgba_color[3]})"
         random_text = get_random_string()
         random_number = get_random_number()
         visible_elements = find_locators(page)
         if not visible_elements:
-            LogTyper.logger.warning("""Warning: The element was not found""")
-            return True
+            LogTyper.logger.warning("Warning: The element was not found")
+            return
         random_input_element = random.choice(visible_elements)
         input_type = random_input_element.get_attribute('type')
         x, y = int(random_input_element.bounding_box()["x"]), int(random_input_element.bounding_box()["y"])
@@ -77,21 +77,20 @@ def send_text(page, indication, restricted_page, color):
             random_input_element.type(random_number)
             LogTyper.logger.info(f"Typed {random_number} into a text element at position {x, y}")
     except TimeoutError as e:
-        LogTyper.logger.warning("""Warning: The waiting time for the action has been exceeded""")
+        LogTyper.logger.warning("Warning: The waiting time for the action has been exceeded")
     except Exception as e:
         LogTyper.logger.error("Error: Typed text failed")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
-    return True
 
 
 def send_keys(page, indication, restricted_page, color):
     try:
         initial_url = page.url
-        page.wait_for_load_state("networkidle")
+        page.wait_for_load_state("load")
         visible_elements = find_locators(page)
         if not visible_elements:
             LogTyper.logger.warning("Warning: The element was not found")
-            return True
+            return
         random_input_element = random.choice(visible_elements)
         x, y = int(random_input_element.bounding_box()["x"]), int(random_input_element.bounding_box()["y"])
         input_type = ['Shift', 'Backspace', 'Control', 'Escape', 'Alt', 'Delete', 'Enter']
@@ -118,11 +117,10 @@ def send_keys(page, indication, restricted_page, color):
             blocking_movement(page, initial_url)
         LogTyper.logger.info(f"Sent {random_input_type} key to a text element at position {x, y}")
     except TimeoutError as e:
-        LogTyper.logger.warning("""Warning: The waiting time for the action has been exceeded""")
+        LogTyper.logger.warning("Warning: The waiting time for the action has been exceeded")
     except Exception as e:
         LogTyper.logger.error("Error: Sent key failed")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
-    return True
 
 
 def get_random_action():

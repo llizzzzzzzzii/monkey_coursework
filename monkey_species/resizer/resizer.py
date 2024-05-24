@@ -27,8 +27,7 @@ def resize_page(page, color):
         page.set_viewport_size({"width": new_width, "height": new_height})
         LogResizer.logger.info(f"Resized to {new_width, new_height}")
     except TimeoutError as e:
-        LogResizer.logger.warning("""Warning: The waiting time for the action has been exceeded""")
+        LogResizer.logger.warning("Warning: The waiting time for the action has been exceeded")
     except Exception as e:
         LogResizer.logger.error("Error: Resize failed")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
-    return True

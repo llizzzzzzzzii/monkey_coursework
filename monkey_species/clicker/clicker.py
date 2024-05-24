@@ -56,58 +56,53 @@ def get_element_and_coordinate(page):
         LogClicker.logger.warning("Warning: The element was not found")
         return [], 0, 0
     element = random.choice(visible_elements)
-    x, y = element.bounding_box()["x"], element.bounding_box()["y"]
-    height, width = element.bounding_box()["height"], element.bounding_box()["width"]
-    x = int(x + width / 2)
-    y = int(y + height / 2)
+    x, y = int(element.bounding_box()["x"]), int(element.bounding_box()["y"])
     return element, x, y
 
 
 def click(page, indication, restricted_page, color):
     element, x, y = get_element_and_coordinate(page)
     if not element:
-        return True
+        return
     initial_url = page.url
     try:
         if indication:
             draw_indicator(page, element, color)
-        element.click()
+        page.mouse.click(x, y)
         if restricted_page:
             blocking_movement(page, initial_url)
         LogClicker.logger.info(f"Clicked at position {x, y}")
     except TimeoutError as e:
-        LogClicker.logger.warning("""Warning: The waiting time for the action has been exceeded""")
+        LogClicker.logger.warning("Warning: The waiting time for the action has been exceeded")
     except Exception as e:
         LogClicker.logger.error("Error: Click failed")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
-    return True
 
 
 def double_click(page, indication, restricted_page, color):
     element, x, y = get_element_and_coordinate(page)
     if not element:
-        return True
+        return
     initial_url = page.url
     try:
         if indication:
             draw_indicator(page, element, color)
             draw_indicator(page, element, color)
-        element.dblclick()
+        page.mouse.dblclick(x, y)
         if restricted_page:
             blocking_movement(page, initial_url)
         LogClicker.logger.info(f"Clicked at position {x, y} 2 times")
     except TimeoutError as e:
-        LogClicker.logger.warning("""Warning: The waiting time for the action has been exceeded""")
+        LogClicker.logger.warning("Warning: The waiting time for the action has been exceeded")
     except Exception as e:
         LogClicker.logger.error("Double click failed")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
-    return True
 
 
 def multiple_click(page, indication, restricted_page, color):
     element, x, y = get_element_and_coordinate(page)
     if not element:
-        return True
+        return
     count = random.randint(3, 10)
     initial_url = page.url
     try:
@@ -115,49 +110,47 @@ def multiple_click(page, indication, restricted_page, color):
             if indication:
                 draw_indicator(page, element, color)
                 time.sleep(1)
-        element.click(click_count=count)
+        page.mouse.click(x, y, click_count=count)
         if restricted_page:
             blocking_movement(page, initial_url)
         LogClicker.logger.info(f"Clicked at position {x, y} {count} times")
+        page.wait_for_load_state("load")
     except TimeoutError as e:
-        LogClicker.logger.warning("""Warning: The waiting time for the action has been exceeded""")
+        LogClicker.logger.warning("Warning: The waiting time for the action has been exceeded")
     except Exception as e:
         LogClicker.logger.error("Multiple clicks failed")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
-    return True
 
 
 def hover(page, indication, restricted_page, color):
     element, x, y = get_element_and_coordinate(page)
     if not element:
-        return True
+        return
     try:
         if indication:
             draw_indicator(page, element, color)
-        element.hover()
+        page.mouse.move(x, y)
         LogClicker.logger.info(f"Hovered at position {x, y}")
     except TimeoutError as e:
-        LogClicker.logger.warning("""Warning: The waiting time for the action has been exceeded""")
+        LogClicker.logger.warning("Warning: The waiting time for the action has been exceeded")
     except Exception as e:
         LogClicker.logger.error("Hover failed")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
-    return True
 
 def click_and_hold(page, indication, restricted_page, color):
     element, x, y = get_element_and_coordinate(page)
     if not element:
-        return True
+        return
     initial_url = page.url
     try:
         if indication:
             draw_indicator(page, element, color)
-        element.click(delay=3000)
+        page.mouse.click(x, y, delay=3000)
         if restricted_page:
             blocking_movement(page, initial_url)
         LogClicker.logger.info(f"Clicked and held at position {x, y}")
     except TimeoutError as e:
-        LogClicker.logger.warning("""Warning: The waiting time for the action has been exceeded""")
+        LogClicker.logger.warning("Warning: The waiting time for the action has been exceeded")
     except Exception as e:
         LogClicker.logger.error("Click and hold failed")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
-    return True

@@ -8,6 +8,7 @@ from monkey_species.resizer.resizer import resize_page
 from monkey_species.scroller.scroller import scroll_to_random_position
 from monkey_species.reloader.reloader import reload_page
 from monkey_species.toucher.toucher import touch
+from playwright._impl._errors import TimeoutError as PlaywrightTimeoutError
 import time
 
 
@@ -47,39 +48,43 @@ class Monkey:
                     #self.page.evaluate('''console.error("Это тестовая ошибка в браузере");''')
                     if action == 'typer':
                         if get_random_action() == 'text':
-                            result = send_text(self.page, self.indication, self.restricted_page, self.color)
+                            send_text(self.page, self.indication, self.restricted_page, self.color)
                             current += 1
                             time.sleep(self.delay)
                         else:
-                            result = send_keys(self.page, self.indication, self.restricted_page, self.color)
+                            send_keys(self.page, self.indication, self.restricted_page, self.color)
                             current += 1
                             time.sleep(self.delay)
                     if action == 'clicker':
                         click_action = clicker.random_action()
-                        result = click_action(self.page, self.indication, self.restricted_page, self.color)
+                        click_action(self.page, self.indication, self.restricted_page, self.color)
                         current += 1
                         time.sleep(self.delay)
                     if action == 'scroller':
-                        result = scroll_to_random_position(self.page)
+                        scroll_to_random_position(self.page)
                         current += 1
                         time.sleep(self.delay)
                     if action == 'reloader':
-                        result = reload_page(self.page)
+                        reload_page(self.page)
                         current += 1
                         time.sleep(self.delay)
                     if action == 'resizer':
-                        result = resize_page(self.page, self.color)
+                        resize_page(self.page, self.color)
                         current += 1
                         time.sleep(self.delay)
                     if action == 'toucher':
-                        result = touch(self.page, self.indication, self.restricted_page, self.color)
+                        touch(self.page, self.indication, self.restricted_page, self.color)
                         current += 1
                         time.sleep(self.delay)
-                    if not result or self.count == 0:
+                    if self.count == 0:
                         LogMonkey.logger.error("Fail")
                         return
                     if self.count == current:
                         break
+        except PlaywrightTimeoutError as e:
+            LogMonkey.logger.error("Error: The page is not responding")
+            LogMonkey.logger.error("Fail")
+            return
         except Exception as e:
             LogMonkey.logger.error("Error: Monkey run")
             LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
