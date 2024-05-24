@@ -72,7 +72,7 @@ class Monkey:
                         current += 1
                         time.sleep(self.delay)
                     if action == 'toucher':
-                        result = touch(self.page, self.indication, self.restricted_page, self.ignore_errors,self.color)
+                        result = touch(self.page, self.indication, self.restricted_page, self.color)
                         current += 1
                         time.sleep(self.delay)
                     if not result or self.count == 0:

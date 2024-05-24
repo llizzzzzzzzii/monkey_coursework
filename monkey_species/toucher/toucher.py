@@ -38,24 +38,27 @@ def draw_indicator(page, x, y, color):
         ''')
 
 
-def touch(page, indication, restricted_page, ignore_errors,color):
+def touch(page, indication, restricted_page, color):
     try:
         page.wait_for_load_state("load")
         initial_url = page.url
         visible_elements = find_locators(page)
+        if not visible_elements:
+            LogToucher.logger.warning("Warning: The element was not found")
+            return [], 0, 0
         element = random.choice(visible_elements)
         box = element.bounding_box()
         x = int(box['x'] + box['width'] / 2)
         y = int(box['y'] + box['height'] / 2)
         if indication:
-            draw_indicator(page, x, y,color)
+            draw_indicator(page, x, y, color)
         element.tap()
         if restricted_page:
             blocking_movement(page, initial_url)
         LogToucher.logger.info(f"Tapped on an element at position {x, y}")
+    except TimeoutError as e:
+        LogToucher.logger.warning("""Warning: The waiting time for the action has been exceeded""")
     except Exception as e:
         LogToucher.logger.error("Error: Touch failed")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
-        if not ignore_errors:
-            return False
     return True
