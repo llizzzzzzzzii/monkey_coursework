@@ -28,6 +28,8 @@ class Monkey:
     def log_console_message(self, msg):
         if msg.type == 'error':
             LogError.logger.error(f"Console error: {msg.text}")
+            if not self.ignore_errors:
+                self.count = 0
 
 
     def run(self):
@@ -36,12 +38,13 @@ class Monkey:
             LogMonkey.logger.info(f"Run monkey with {species_str}")
             self.page.goto(self.url)
             self.page.wait_for_load_state('domcontentloaded')
-            count_species = self.count
             current = 0
             self.page.on("console", lambda msg: self.log_console_message(msg))
-            while current < count_species:
+            while current < self.count:
                 actions = self.species
                 for action in actions:
+                    #тестовая строка для вызова ошибок в браузере
+                    #self.page.evaluate('''console.error("Это тестовая ошибка в браузере");''')
                     if action == 'typer':
                         if get_random_action() == 'text':
                             result = send_text(self.page, self.indication, self.restricted_page, self.ignore_errors, self.color)
@@ -72,10 +75,10 @@ class Monkey:
                         result = touch(self.page, self.indication, self.restricted_page, self.ignore_errors,self.color)
                         current += 1
                         time.sleep(self.delay)
-                    if not result:
+                    if not result or self.count == 0:
                         LogMonkey.logger.error("Fail")
                         return
-                    if count_species == current:
+                    if self.count == current:
                         break
         except Exception as e:
             LogMonkey.logger.error("Error: Monkey run")
