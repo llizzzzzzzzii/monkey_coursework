@@ -47,11 +47,11 @@ class Monkey:
                     #self.page.evaluate('''console.error("Это тестовая ошибка в браузере");''')
                     if action == 'typer':
                         if get_random_action() == 'text':
-                            result = send_text(self.page, self.indication, self.restricted_page, self.ignore_errors, self.color)
+                            result = send_text(self.page, self.indication, self.restricted_page, self.color)
                             current += 1
                             time.sleep(self.delay)
                         else:
-                            result = send_keys(self.page, self.indication, self.restricted_page, self.ignore_errors, self.color)
+                            result = send_keys(self.page, self.indication, self.restricted_page, self.color)
                             current += 1
                             time.sleep(self.delay)
                     if action == 'clicker':
