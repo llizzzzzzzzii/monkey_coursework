@@ -64,7 +64,7 @@ class Monkey:
                         current += 1
                         time.sleep(self.delay)
                     if action == 'reloader':
-                        result = reload_page(self.page, self.ignore_errors)
+                        result = reload_page(self.page)
                         current += 1
                         time.sleep(self.delay)
                     if action == 'resizer':
