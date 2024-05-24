@@ -60,7 +60,7 @@ class Monkey:
                         current += 1
                         time.sleep(self.delay)
                     if action == 'scroller':
-                        result = scroll_to_random_position(self.page, self.ignore_errors)
+                        result = scroll_to_random_position(self.page)
                         current += 1
                         time.sleep(self.delay)
                     if action == 'reloader':
