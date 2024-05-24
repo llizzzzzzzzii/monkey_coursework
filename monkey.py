@@ -56,7 +56,7 @@ class Monkey:
                             time.sleep(self.delay)
                     if action == 'clicker':
                         click_action = clicker.random_action()
-                        result = click_action(self.page, self.indication, self.restricted_page, self.ignore_errors, self.color)
+                        result = click_action(self.page, self.indication, self.restricted_page, self.color)
                         current += 1
                         time.sleep(self.delay)
                     if action == 'scroller':
