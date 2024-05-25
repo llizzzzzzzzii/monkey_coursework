@@ -9,6 +9,8 @@ from monkey_species.scroller.scroller import scroll_to_random_position
 from monkey_species.reloader.reloader import reload_page
 from monkey_species.toucher.toucher import touch
 from playwright._impl._errors import TimeoutError as PlaywrightTimeoutError
+from playwright._impl._errors import TargetClosedError as PlaywrightTargetClosedError
+from playwright._impl._errors import Error as PlaywrightError
 import time
 
 
@@ -83,6 +85,14 @@ class Monkey:
                         break
         except PlaywrightTimeoutError as e:
             LogMonkey.logger.error("Error: The page is not responding")
+            LogMonkey.logger.error("Fail")
+            return
+        except PlaywrightError as e:
+            LogMonkey.logger.error("Error: The execution of the request was interrupted. Maybe frame was detached")
+            LogMonkey.logger.error("Fail")
+            return
+        except PlaywrightTargetClosedError as e:
+            LogMonkey.logger.error("Error: Target page, context or browser has been closed")
             LogMonkey.logger.error("Fail")
             return
         except Exception as e:
