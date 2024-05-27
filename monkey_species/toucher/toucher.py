@@ -48,12 +48,15 @@ def touch(page, indication, restricted_page, color):
         if not visible_elements:
             LogToucher.logger.warning("Warning: The element was not found")
         element = random.choice(visible_elements)
+        tag_name = page.evaluate("(element) => element.tagName.toLowerCase()", element)
         box = element.bounding_box()
         x = int(box['x'])
         y = int(box['y'])
         if indication:
             draw_indicator(page, x, y, color)
         page.touchscreen.tap(x, y)
+        if tag_name == 'img':
+            page.keyboard.press("Escape")
         if restricted_page:
             blocking_movement(page, initial_url)
         LogToucher.logger.info(f"Tapped on an element at position {x, y}")
