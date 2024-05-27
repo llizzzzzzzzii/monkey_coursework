@@ -13,10 +13,10 @@ def blocking_movement(page, initial_url):
 
 def find_locators(page):
     page.wait_for_load_state("load")
-    clickable_elements = page.query_selector_all('button, a, input, input[role="button"]')
+    clickable_elements = page.query_selector_all('button, a, input, img, input[role="button"]')
     viewport_height = page.viewport_size['height']
     visible_clickable_elements = [element for element in clickable_elements if element.is_visible() and
-                                  element.bounding_box()['y'] >= 0 and element.bounding_box()['y'] <= viewport_height
+                                  0 <= element.bounding_box()['y'] <= viewport_height
                                   and element.get_attribute('type') != 'url']
     return visible_clickable_elements
 
