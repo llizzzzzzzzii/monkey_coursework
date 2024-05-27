@@ -21,9 +21,8 @@ def test_send_text(browser_page):
     browser_page.goto("https://account.mail.ru/signup")
     indication = True
     restricted_page = False
-    ignore_errors = True
     color = 'blue'
-    send_text(browser_page, indication, restricted_page,ignore_errors, color)
+    send_text(browser_page, indication, restricted_page, color)
     input_value = browser_page.evaluate('''() => {
             return document.querySelector('input').value;
         }''')
