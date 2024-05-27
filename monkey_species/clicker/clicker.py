@@ -13,10 +13,10 @@ def blocking_movement(page, initial_url):
 
 def find_locators(page):
     page.wait_for_load_state("load")
-    clickable_elements = page.query_selector_all('button, a, input, input[role="button"]')
+    clickable_elements = page.query_selector_all('button, a, input, img, input[role="button"]')
     viewport_height = page.viewport_size['height']
     visible_clickable_elements = [element for element in clickable_elements if element.is_visible() and
-                                  element.bounding_box()['y'] >= 0 and element.bounding_box()['y'] <= viewport_height
+                                  0 <= element.bounding_box()['y'] <= viewport_height
                                   and element.get_attribute('type') != 'url']
     return visible_clickable_elements
 
@@ -50,7 +50,7 @@ def random_action():
 
 
 def get_element_and_coordinate(page):
-    page.wait_for_load_state("load")
+    page.wait_for_load_state("domcontentloaded")
     visible_elements = find_locators(page)
     if not visible_elements:
         LogClicker.logger.warning("Warning: The element was not found")
@@ -62,6 +62,7 @@ def get_element_and_coordinate(page):
 
 def click(page, indication, restricted_page, color):
     element, x, y = get_element_and_coordinate(page)
+    tag_name = page.evaluate("(element) => element.tagName.toLowerCase()", element)
     if not element:
         return
     initial_url = page.url
@@ -69,6 +70,8 @@ def click(page, indication, restricted_page, color):
         if indication:
             draw_indicator(page, element, color)
         page.mouse.click(x, y)
+        if tag_name == 'img':
+            page.keyboard.press("Escape")
         if restricted_page:
             blocking_movement(page, initial_url)
         LogClicker.logger.info(f"Clicked at position {x, y}")
@@ -81,6 +84,7 @@ def click(page, indication, restricted_page, color):
 
 def double_click(page, indication, restricted_page, color):
     element, x, y = get_element_and_coordinate(page)
+    tag_name = page.evaluate("(element) => element.tagName.toLowerCase()", element)
     if not element:
         return
     initial_url = page.url
@@ -89,6 +93,8 @@ def double_click(page, indication, restricted_page, color):
             draw_indicator(page, element, color)
             draw_indicator(page, element, color)
         page.mouse.dblclick(x, y)
+        if tag_name == 'img':
+            page.keyboard.press("Escape")
         if restricted_page:
             blocking_movement(page, initial_url)
         LogClicker.logger.info(f"Clicked at position {x, y} 2 times")
@@ -101,6 +107,7 @@ def double_click(page, indication, restricted_page, color):
 
 def multiple_click(page, indication, restricted_page, color):
     element, x, y = get_element_and_coordinate(page)
+    tag_name = page.evaluate("(element) => element.tagName.toLowerCase()", element)
     if not element:
         return
     count = random.randint(3, 10)
@@ -111,6 +118,8 @@ def multiple_click(page, indication, restricted_page, color):
                 draw_indicator(page, element, color)
                 time.sleep(1)
         page.mouse.click(x, y, click_count=count)
+        if tag_name == 'img':
+            page.keyboard.press("Escape")
         if restricted_page:
             blocking_movement(page, initial_url)
         LogClicker.logger.info(f"Clicked at position {x, y} {count} times")
@@ -137,8 +146,10 @@ def hover(page, indication, restricted_page, color):
         LogClicker.logger.error("Hover failed")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
 
+
 def click_and_hold(page, indication, restricted_page, color):
     element, x, y = get_element_and_coordinate(page)
+    tag_name = page.evaluate("(element) => element.tagName.toLowerCase()", element)
     if not element:
         return
     initial_url = page.url
@@ -146,6 +157,8 @@ def click_and_hold(page, indication, restricted_page, color):
         if indication:
             draw_indicator(page, element, color)
         page.mouse.click(x, y, delay=3000)
+        if tag_name == 'img':
+            page.keyboard.press("Escape")
         if restricted_page:
             blocking_movement(page, initial_url)
         LogClicker.logger.info(f"Clicked and held at position {x, y}")
@@ -154,3 +167,4 @@ def click_and_hold(page, indication, restricted_page, color):
     except Exception as e:
         LogClicker.logger.error("Click and hold failed")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
+

@@ -13,10 +13,10 @@ def blocking_movement(page, initial_url):
 
 def find_locators(page):
     page.wait_for_load_state("load")
-    clickable_elements = page.query_selector_all('button, a, input, input[role="button"]')
+    clickable_elements = page.query_selector_all('button, a, input, img, input[role="button"]')
     viewport_height = page.viewport_size['height']
     visible_clickable_elements = [element for element in clickable_elements if element.is_visible() and
-                                  element.bounding_box()['y'] >= 0 and element.bounding_box()['y'] <= viewport_height
+                                  0 <= element.bounding_box()['y'] <= viewport_height
                                   and element.get_attribute('type') != 'url']
     return visible_clickable_elements
 
@@ -48,12 +48,15 @@ def touch(page, indication, restricted_page, color):
         if not visible_elements:
             LogToucher.logger.warning("Warning: The element was not found")
         element = random.choice(visible_elements)
+        tag_name = page.evaluate("(element) => element.tagName.toLowerCase()", element)
         box = element.bounding_box()
         x = int(box['x'])
         y = int(box['y'])
         if indication:
             draw_indicator(page, x, y, color)
         page.touchscreen.tap(x, y)
+        if tag_name == 'img':
+            page.keyboard.press("Escape")
         if restricted_page:
             blocking_movement(page, initial_url)
         LogToucher.logger.info(f"Tapped on an element at position {x, y}")
