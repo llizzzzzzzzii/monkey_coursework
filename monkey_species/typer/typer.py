@@ -76,7 +76,7 @@ def send_text(page, indication, restricted_page, color):
         else:
             random_input_element.type(random_number)
             LogTyper.logger.info(f"Typed {random_number} into a text element at position {x, y}")
-    except TimeoutError as e:
+    except TimeoutError:
         LogTyper.logger.warning("Warning: The waiting time for the action has been exceeded")
     except Exception as e:
         LogTyper.logger.error("Error: Typed text failed")
@@ -116,7 +116,7 @@ def send_keys(page, indication, restricted_page, color):
         if restricted_page:
             blocking_movement(page, initial_url)
         LogTyper.logger.info(f"Sent {random_input_type} key to a text element at position {x, y}")
-    except TimeoutError as e:
+    except TimeoutError:
         LogTyper.logger.warning("Warning: The waiting time for the action has been exceeded")
     except Exception as e:
         LogTyper.logger.error("Error: Sent key failed")
