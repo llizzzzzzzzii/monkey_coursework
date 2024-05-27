@@ -91,3 +91,4 @@ class Monkey:
             return
 
         LogMonkey.logger.info("Success")
+
