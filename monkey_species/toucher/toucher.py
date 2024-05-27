@@ -1,5 +1,6 @@
 from monkey_logging.monkey_logger import LogToucher
 from monkey_logging.monkey_logger import LogError
+from playwright._impl._errors import TimeoutError as PlaywrightTimeoutError
 import random
 from matplotlib.colors import to_rgba
 import time
@@ -54,13 +55,14 @@ def touch(page, indication, restricted_page, color):
         y = int(box['y'])
         if indication:
             draw_indicator(page, x, y, color)
-        page.touchscreen.tap(x, y)
+        with page.expect_navigation():
+            page.touchscreen.tap(x, y)
         if tag_name == 'img':
             page.keyboard.press("Escape")
         if restricted_page:
             blocking_movement(page, initial_url)
         LogToucher.logger.info(f"Tapped on an element at position {x, y}")
-    except TimeoutError as e:
+    except PlaywrightTimeoutError:
         LogToucher.logger.warning("Warning: The waiting time for the action has been exceeded")
     except Exception as e:
         LogToucher.logger.error("Error: Touch failed")

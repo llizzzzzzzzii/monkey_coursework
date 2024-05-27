@@ -14,7 +14,7 @@ def scroll_to_random_position(page):
 
         page.evaluate('window.scrollTo({}, {})'.format(random_x, random_y))
         LogScroller.logger.info(f"Scrolled to position {random_x, random_y}")
-    except TimeoutError as e:
+    except TimeoutError:
         LogScroller.logger.warning("Warning: The waiting time for the action has been exceeded")
     except Exception as e:
         LogScroller.logger.error("Error: Scroll failed")

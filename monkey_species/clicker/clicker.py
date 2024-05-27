@@ -3,6 +3,7 @@ import random
 from monkey_logging.monkey_logger import LogClicker
 from monkey_logging.monkey_logger import LogError
 from matplotlib.colors import to_rgba
+from playwright._impl._errors import TimeoutError as PlaywrightTimeoutError
 
 
 def blocking_movement(page, initial_url):
@@ -69,13 +70,15 @@ def click(page, indication, restricted_page, color):
     try:
         if indication:
             draw_indicator(page, element, color)
-        page.mouse.click(x, y)
+        with page.expect_navigation():
+            page.mouse.click(x, y)
         if tag_name == 'img':
+            time.sleep(0.1)
             page.keyboard.press("Escape")
         if restricted_page:
             blocking_movement(page, initial_url)
         LogClicker.logger.info(f"Clicked at position {x, y}")
-    except TimeoutError as e:
+    except PlaywrightTimeoutError:
         LogClicker.logger.warning("Warning: The waiting time for the action has been exceeded")
     except Exception as e:
         LogClicker.logger.error("Error: Click failed")
@@ -92,13 +95,15 @@ def double_click(page, indication, restricted_page, color):
         if indication:
             draw_indicator(page, element, color)
             draw_indicator(page, element, color)
-        page.mouse.dblclick(x, y)
+        with page.expect_navigation():
+            page.mouse.dblclick(x, y)
         if tag_name == 'img':
+            time.sleep(0.1)
             page.keyboard.press("Escape")
         if restricted_page:
             blocking_movement(page, initial_url)
         LogClicker.logger.info(f"Clicked at position {x, y} 2 times")
-    except TimeoutError as e:
+    except PlaywrightTimeoutError:
         LogClicker.logger.warning("Warning: The waiting time for the action has been exceeded")
     except Exception as e:
         LogClicker.logger.error("Double click failed")
@@ -117,14 +122,16 @@ def multiple_click(page, indication, restricted_page, color):
             if indication:
                 draw_indicator(page, element, color)
                 time.sleep(1)
-        page.mouse.click(x, y, click_count=count)
+        with page.expect_navigation():
+            page.mouse.click(x, y, click_count=count)
         if tag_name == 'img':
+            time.sleep(0.1)
             page.keyboard.press("Escape")
         if restricted_page:
             blocking_movement(page, initial_url)
         LogClicker.logger.info(f"Clicked at position {x, y} {count} times")
         page.wait_for_load_state("load")
-    except TimeoutError as e:
+    except PlaywrightTimeoutError:
         LogClicker.logger.warning("Warning: The waiting time for the action has been exceeded")
     except Exception as e:
         LogClicker.logger.error("Multiple clicks failed")
@@ -140,7 +147,7 @@ def hover(page, indication, restricted_page, color):
             draw_indicator(page, element, color)
         page.mouse.move(x, y)
         LogClicker.logger.info(f"Hovered at position {x, y}")
-    except TimeoutError as e:
+    except TimeoutError:
         LogClicker.logger.warning("Warning: The waiting time for the action has been exceeded")
     except Exception as e:
         LogClicker.logger.error("Hover failed")
@@ -156,13 +163,14 @@ def click_and_hold(page, indication, restricted_page, color):
     try:
         if indication:
             draw_indicator(page, element, color)
-        page.mouse.click(x, y, delay=3000)
+        with page.expect_navigation():
+            page.mouse.click(x, y, delay=3000)
         if tag_name == 'img':
             page.keyboard.press("Escape")
         if restricted_page:
             blocking_movement(page, initial_url)
         LogClicker.logger.info(f"Clicked and held at position {x, y}")
-    except TimeoutError as e:
+    except PlaywrightTimeoutError:
         LogClicker.logger.warning("Warning: The waiting time for the action has been exceeded")
     except Exception as e:
         LogClicker.logger.error("Click and hold failed")
