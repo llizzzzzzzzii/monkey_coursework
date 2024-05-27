@@ -20,6 +20,5 @@ def browser_page():
 
 def test_reload_page(browser_page):
     browser_page.goto("https://www.wikipedia.org/")
-    ignore_errors = True
-    reload_page(browser_page,ignore_errors)
+    reload_page(browser_page)
     assert browser_page.url == "https://www.wikipedia.org/"
