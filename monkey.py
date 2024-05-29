@@ -34,6 +34,8 @@ class Monkey:
             if not self.ignore_errors:
                 self.count = 0
 
+    def on_page_popup(self,popup):
+            popup.close()
 
     def run(self):
         try:
@@ -41,6 +43,8 @@ class Monkey:
             LogMonkey.logger.info(f"Run monkey with {species_str}")
             self.page.goto(self.url)
             self.page.wait_for_load_state('domcontentloaded')
+            if self.restricted_page:
+                self.page.on("popup", self.on_page_popup)
             current = 0
             self.page.on("console", lambda msg: self.log_console_message(msg))
             while current < self.count:
