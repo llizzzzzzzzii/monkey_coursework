@@ -35,7 +35,11 @@ jobs:
       - name: Install matplotlib
         run: |
             pip install matplotlib
-        
+
+      - name: Install pyautogui
+        run: |
+            pip install pyautogui
+            
       - name: Test with pytest
         run: |
           python -m pytest
