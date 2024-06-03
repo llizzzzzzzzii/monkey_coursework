@@ -34,7 +34,7 @@ class Monkey:
             if not self.ignore_errors:
                 self.count = 0
 
-    def on_page_popup(self,popup):
+    def on_page_popup(self, popup):
             popup.close()
 
     def run(self):
@@ -63,7 +63,7 @@ class Monkey:
                             time.sleep(self.delay)
                     if action == 'clicker':
                         click_action = clicker.random_action()
-                        click_action(self.page, self.indication, self.restricted_page, self.color)
+                        self.page = click_action(self.page, self.indication, self.restricted_page, self.color)
                         current += 1
                         time.sleep(self.delay)
                     if action == 'scroller':
@@ -87,15 +87,15 @@ class Monkey:
                         return
                     if self.count == current:
                         break
-        except PlaywrightTimeoutError as e:
+        except PlaywrightTimeoutError:
             LogMonkey.logger.error("Error: The page is not responding")
             LogMonkey.logger.error("Fail")
             return
-        except PlaywrightError as e:
+        except PlaywrightError:
             LogMonkey.logger.error("Error: The execution of the request was interrupted. Maybe frame was detached")
             LogMonkey.logger.error("Fail")
             return
-        except PlaywrightTargetClosedError as e:
+        except PlaywrightTargetClosedError:
             LogMonkey.logger.error("Error: Target page, context or browser has been closed")
             LogMonkey.logger.error("Fail")
             return

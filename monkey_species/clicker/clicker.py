@@ -88,23 +88,35 @@ def is_element_visible(page, element):
         }
     """, element)
 
+def open_new_tab(page, x, y, restricted_page):
+    with page.context.expect_page() as new_page_info:
+        page.mouse.click(x, y)
+    if not restricted_page:
+        new_page = new_page_info.value
+        new_page.bring_to_front()
+        return new_page
+    return page
 
 def click(page, indication, restricted_page, color):
     element, x, y = get_element_and_coordinate(page)
+    if not element:
+        return page
     tag_name = page.evaluate("(element) => element.tagName.toLowerCase()", element)
     has_href = page.evaluate("(element) => element.hasAttribute('href')", element)
-    if not element:
-        return
+    target_blank = page.evaluate("(element) => element.getAttribute('target') === '_blank'", element)
     initial_url = page.url
     try:
         if indication:
             draw_indicator(page, x, y, color)
             time.sleep(1)
-        if has_href:
+        if target_blank:
+            page = open_new_tab(page, x, y, restricted_page)
+        elif has_href:
             with page.expect_navigation():
                 page.mouse.click(x, y)
         else:
             page.mouse.click(x, y)
+            page.wait_for_load_state('networkidle')
         if tag_name == 'img':
             time.sleep(0.1)
             page.keyboard.press("Escape")
@@ -113,9 +125,11 @@ def click(page, indication, restricted_page, color):
         LogClicker.logger.info(f"Clicked at position {x, y}")
     except PlaywrightTimeoutError:
         LogClicker.logger.warning("Warning: The waiting time for the action has been exceeded")
+        return page
     except Exception as e:
         LogClicker.logger.error("Error: Click failed")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
+    return page
 
 
 def double_click(page, indication, restricted_page, color):
