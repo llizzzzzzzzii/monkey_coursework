@@ -14,10 +14,10 @@ def blocking_movement(page, initial_url):
 
 def find_locators(page):
     page.wait_for_load_state("load")
-    clickable_elements = page.query_selector_all('button, a, input, img, input[role="button"]')
-    viewport_height = page.viewport_size['height']
-    visible_clickable_elements = [element for element in clickable_elements if is_element_visible(page, element) and
-                                  0 <= element.bounding_box()['y'] <= viewport_height]
+    clickable_elements = page.query_selector_all('button, a, input, img, [role="button"], [class="button"]')
+    # clickable_elements = page.query_selector_all('[class="button"]')
+    # viewport_height = page.viewport_size['height']
+    visible_clickable_elements = [element for element in clickable_elements if is_element_visible(page, element)]
     # visible_clickable_elements = [element for element in clickable_elements if element.is_visible() and
     #                               0 <= element.bounding_box()['y'] <= viewport_height
     #                               and element.get_attribute('type') != 'url']
@@ -67,6 +67,10 @@ def get_element_and_coordinate(page):
 
 
 def is_element_visible(page, element):
+    if not (element.is_visible() and
+            element.get_attribute('type') != 'url' and
+            0 <= element.bounding_box()['y'] <= page.viewport_size['height']):
+        return False
     return page.evaluate("""
         (element) => {
             const style = window.getComputedStyle(element);
