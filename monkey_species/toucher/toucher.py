@@ -65,30 +65,75 @@ def draw_indicator(page, x, y, color):
     time.sleep(0.7)
 
 
+def has_target_blank_and_href(page, element):
+    target_blank = page.evaluate("(element) => element.getAttribute('target') === '_blank'", element)
+    has_href = page.evaluate("(element) => element.hasAttribute('href')", element)
+    return target_blank, has_href
+
+
+def is_image_and_has_target_blank_and_href(page, element):
+    tag_name = page.evaluate("(element) => element.tagName.toLowerCase()", element)
+    if tag_name == 'img':
+        link_element_handle = page.evaluate_handle("""
+                (element) => {
+                    while (element.parentElement) {
+                        if (element.parentElement.tagName.toLowerCase() === 'a') {
+                            return element.parentElement;
+                        }
+                        element = element.parentElement;
+                    }
+                    return null;
+                }
+            """, element)
+        if link_element_handle.as_element():
+            target_blank, has_href = has_target_blank_and_href(page, link_element_handle)
+            return target_blank, has_href, tag_name
+    target_blank, has_href = has_target_blank_and_href(page, element)
+    return target_blank, has_href, tag_name
+
+
+def open_new_tab(page, x, y, restricted_page):
+    with page.context.expect_page() as new_page_info:
+        page.touchscreen.tap(x, y)
+    if not restricted_page:
+        new_page = new_page_info.value
+        new_page.bring_to_front()
+        return new_page
+    return page
+
+
 def touch(page, indication, restricted_page, color):
     try:
-        page.wait_for_load_state("load")
-        time.sleep(0.5)
+        page.wait_for_load_state("domcontentloaded")
         initial_url = page.url
         visible_elements = find_locators(page)
         if not visible_elements:
             LogToucher.logger.warning("Warning: The element was not found")
+            return page
         element = random.choice(visible_elements)
-        tag_name = page.evaluate("(element) => element.tagName.toLowerCase()", element)
-        box = element.bounding_box()
-        x = int(box['x'])
-        y = int(box['y'])
+        bounding_box = element.bounding_box()
+        x, y = int(bounding_box['x'] + bounding_box['width'] / 2), int(bounding_box['y'] + bounding_box['height'] / 2)
+        target_blank, has_href, tag_name = is_image_and_has_target_blank_and_href(page, element)
         if indication:
             draw_indicator(page, x, y, color)
-        with page.expect_navigation():
+        if target_blank:
+            page = open_new_tab(page, x, y, restricted_page)
+        elif has_href:
+            with page.expect_navigation():
+                page.touchscreen.tap(x, y)
+        else:
             page.touchscreen.tap(x, y)
+            page.wait_for_load_state('networkidle')
         if tag_name == 'img':
+            time.sleep(0.3)
             page.keyboard.press("Escape")
         if restricted_page:
             blocking_movement(page, initial_url)
         LogToucher.logger.info(f"Tapped on an element at position {x, y}")
     except PlaywrightTimeoutError:
         LogToucher.logger.warning("Warning: The waiting time for the action has been exceeded")
+        return page
     except Exception as e:
         LogToucher.logger.error("Error: Touch failed")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
+    return page
