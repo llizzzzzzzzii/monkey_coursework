@@ -12,13 +12,33 @@ def blocking_movement(page, initial_url):
         page.goto(initial_url)
 
 
+def is_element_visible(page, element):
+    if not (element.is_visible() and
+            element.get_attribute('type') != 'url' and
+            0 <= element.bounding_box()['y'] <= page.viewport_size['height']):
+        return False
+    return page.evaluate("""
+        (element) => {
+            const style = window.getComputedStyle(element);
+            if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0' ||
+                element.offsetWidth === 0 || element.offsetHeight === 0) {
+                return false;
+            }
+
+            const rect = element.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const topElement = document.elementFromPoint(centerX, centerY);
+
+            return element === topElement || element.contains(topElement);
+        }
+    """, element)
+
+
 def find_locators(page):
     page.wait_for_load_state("load")
-    clickable_elements = page.query_selector_all('button, a, input, img, input[role="button"]')
-    viewport_height = page.viewport_size['height']
-    visible_clickable_elements = [element for element in clickable_elements if element.is_visible() and
-                                  0 <= element.bounding_box()['y'] <= viewport_height
-                                  and element.get_attribute('type') != 'url']
+    clickable_elements = page.query_selector_all('button, a, input, img, [role="button"], [class="button"]')
+    visible_clickable_elements = [element for element in clickable_elements if is_element_visible(page, element)]
     return visible_clickable_elements
 
 def draw_indicator(page, x, y, color):
