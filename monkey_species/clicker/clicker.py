@@ -194,16 +194,17 @@ def double_click(page, indication, restricted_page, color):
 def multiple_click(page, indication, restricted_page, color):
     element, x, y = get_element_and_coordinate(page)
     if not element:
-        return
-    tag_name = page.evaluate("(element) => element.tagName.toLowerCase()", element)
-    has_href = page.evaluate("(element) => element.hasAttribute('href')", element)
+        return page
+    target_blank, has_href, tag_name = is_image_and_has_target_blank_and_href(page, element)
     count = random.randint(3, 10)
     initial_url = page.url
     try:
         for i in range(count):
             if indication:
                 draw_indicator(page, x, y, color)
-        if has_href:
+        if target_blank:
+            page = open_new_tab(page, x, y, restricted_page, count)
+        elif has_href:
             with page.expect_navigation():
                 page.mouse.click(x, y, click_count=count)
         else:
@@ -218,9 +219,11 @@ def multiple_click(page, indication, restricted_page, color):
         page.wait_for_load_state("load")
     except PlaywrightTimeoutError:
         LogClicker.logger.warning("Warning: The waiting time for the action has been exceeded")
+        return page
     except Exception as e:
         LogClicker.logger.error("Multiple clicks failed")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
+    return page
 
 
 def hover(page, indication, restricted_page, color):
