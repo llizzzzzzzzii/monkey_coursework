@@ -113,7 +113,9 @@ def get_element_and_coordinate(page):
 
 def open_new_tab(page, x, y, restricted_page, count):
     with page.context.expect_page() as new_page_info:
-        if count == 1:
+        if count == 0:
+            page.mouse.click(x, y, delay=3000)
+        elif count == 1:
             page.mouse.click(x, y)
         elif count == 2:
             page.mouse.dblclick(x, y)
@@ -229,7 +231,7 @@ def multiple_click(page, indication, restricted_page, color):
 def hover(page, indication, restricted_page, color):
     element, x, y = get_element_and_coordinate(page)
     if not element:
-        return
+        return page
     try:
         if indication:
             draw_indicator(page, x, y, color)
@@ -237,22 +239,25 @@ def hover(page, indication, restricted_page, color):
         LogClicker.logger.info(f"Hovered at position {x, y}")
     except TimeoutError:
         LogClicker.logger.warning("Warning: The waiting time for the action has been exceeded")
+        return page
     except Exception as e:
         LogClicker.logger.error("Hover failed")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
+    return page
 
 
 def click_and_hold(page, indication, restricted_page, color):
     element, x, y = get_element_and_coordinate(page)
     if not element:
-        return
-    tag_name = page.evaluate("(element) => element.tagName.toLowerCase()", element)
-    has_href = page.evaluate("(element) => element.hasAttribute('href')", element)
+        return page
+    target_blank, has_href, tag_name = is_image_and_has_target_blank_and_href(page, element)
     initial_url = page.url
     try:
         if indication:
             draw_indicator(page, x, y, color)
-        if has_href:
+        if target_blank:
+            page = open_new_tab(page, x, y, restricted_page, 0)
+        elif has_href:
             with page.expect_navigation():
                 page.mouse.click(x, y, delay=3000)
         else:
@@ -265,7 +270,9 @@ def click_and_hold(page, indication, restricted_page, color):
         LogClicker.logger.info(f"Clicked and held at position {x, y}")
     except PlaywrightTimeoutError:
         LogClicker.logger.warning("Warning: The waiting time for the action has been exceeded")
+        return page
     except Exception as e:
         LogClicker.logger.error("Click and hold failed")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
+    return page
 
