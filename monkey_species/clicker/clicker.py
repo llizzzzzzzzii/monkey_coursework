@@ -161,15 +161,16 @@ def click(page, indication, restricted_page, color):
 def double_click(page, indication, restricted_page, color):
     element, x, y = get_element_and_coordinate(page)
     if not element:
-        return
-    tag_name = page.evaluate("(element) => element.tagName.toLowerCase()", element)
-    has_href = page.evaluate("(element) => element.hasAttribute('href')", element)
+        return page
+    target_blank, has_href, tag_name = is_image_and_has_target_blank_and_href(page, element)
     initial_url = page.url
     try:
         if indication:
             draw_indicator(page, x, y, color)
             draw_indicator(page, x, y, color)
-        if has_href:
+        if target_blank:
+            page = open_new_tab(page, x, y, restricted_page, 2)
+        elif has_href:
             with page.expect_navigation():
                 page.mouse.dblclick(x, y)
         else:
@@ -183,9 +184,11 @@ def double_click(page, indication, restricted_page, color):
         LogClicker.logger.info(f"Clicked at position {x, y} 2 times")
     except PlaywrightTimeoutError:
         LogClicker.logger.warning("Warning: The waiting time for the action has been exceeded")
+        return page
     except Exception as e:
         LogClicker.logger.error("Double click failed")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
+    return page
 
 
 def multiple_click(page, indication, restricted_page, color):
