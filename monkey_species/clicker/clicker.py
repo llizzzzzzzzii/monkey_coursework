@@ -72,6 +72,33 @@ def blocking_movement(page, initial_url):
         page.goto(initial_url)
 
 
+def has_target_blank_and_href(page, element):
+    target_blank = page.evaluate("(element) => element.getAttribute('target') === '_blank'", element)
+    has_href = page.evaluate("(element) => element.hasAttribute('href')", element)
+    return target_blank, has_href
+
+def is_image_and_has_target_blank_and_href(page, element):
+    tag_name = page.evaluate("(element) => element.tagName.toLowerCase()", element)
+    if tag_name == 'img':
+        link_element_handle = page.evaluate_handle("""
+                (element) => {
+                    while (element.parentElement) {
+                        if (element.parentElement.tagName.toLowerCase() === 'a') {
+                            return element.parentElement;
+                        }
+                        element = element.parentElement;
+                    }
+                    return null;
+                }
+            """, element)
+        if link_element_handle.as_element():
+            target_blank, has_href = has_target_blank_and_href(page, link_element_handle)
+            return target_blank, has_href, tag_name
+
+    target_blank, has_href = has_target_blank_and_href(page, element)
+    return target_blank, has_href, tag_name
+
+
 def get_element_and_coordinate(page):
     page.wait_for_load_state("domcontentloaded")
     visible_elements = find_locators(page)
@@ -103,9 +130,7 @@ def click(page, indication, restricted_page, color):
     element, x, y = get_element_and_coordinate(page)
     if not element:
         return page
-    tag_name = page.evaluate("(element) => element.tagName.toLowerCase()", element)
-    has_href = page.evaluate("(element) => element.hasAttribute('href')", element)
-    target_blank = page.evaluate("(element) => element.getAttribute('target') === '_blank'", element)
+    target_blank, has_href, tag_name = is_image_and_has_target_blank_and_href(page, element)
     initial_url = page.url
     try:
         if indication:
