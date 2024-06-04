@@ -84,9 +84,14 @@ def get_element_and_coordinate(page):
     return element, x, y
 
 
-def open_new_tab(page, x, y, restricted_page):
+def open_new_tab(page, x, y, restricted_page, count):
     with page.context.expect_page() as new_page_info:
-        page.mouse.click(x, y)
+        if count == 1:
+            page.mouse.click(x, y)
+        elif count == 2:
+            page.mouse.dblclick(x, y)
+        else:
+            page.mouse.click(x, y, click_count=count)
     if not restricted_page:
         new_page = new_page_info.value
         new_page.bring_to_front()
@@ -106,7 +111,7 @@ def click(page, indication, restricted_page, color):
         if indication:
             draw_indicator(page, x, y, color)
         if target_blank:
-            page = open_new_tab(page, x, y, restricted_page)
+            page = open_new_tab(page, x, y, restricted_page, 1)
         elif has_href:
             with page.expect_navigation():
                 page.mouse.click(x, y)
