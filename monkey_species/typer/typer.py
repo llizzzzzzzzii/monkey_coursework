@@ -41,11 +41,31 @@ def find_locators(page):
     return visible_input_elements
 
 
+def draw_indicator(page, element, color):
+    rgba_color = to_rgba(color, alpha=0.7)
+    rgba_str = f"rgba({int(rgba_color[0] * 255)},{int(rgba_color[1] * 255)},{int(rgba_color[2] * 255)},{rgba_color[3]})"
+    page.evaluate(
+        f"""(element) => {{
+                element.style.backgroundColor = '{rgba_str}';
+                element.style.zIndex = '2147483647';
+                element.style.position = 'relative';  // Ensures zIndex is respected
+            }}""",
+        element
+    )
+    time.sleep(0.5)
+    page.evaluate(
+        """(element) => {
+            element.style.backgroundColor = '';
+            element.style.zIndex = '';
+            element.style.position = '';
+        }""",
+        element
+    )
+
+
 def send_text(page, indication, restricted_page, color):
     try:
         page.wait_for_load_state("load")
-        rgba_color = to_rgba(color, alpha=0.7)
-        rgba_str = f"rgba({int(rgba_color[0] * 255)},{int(rgba_color[1] * 255)},{int(rgba_color[2] * 255)},{rgba_color[3]})"
         random_text = get_random_string()
         random_number = get_random_number()
         visible_elements = find_locators(page)
@@ -57,19 +77,7 @@ def send_text(page, indication, restricted_page, color):
         x, y = int(random_input_element.bounding_box()["x"]), int(random_input_element.bounding_box()["y"])
         page.wait_for_load_state("networkidle")
         if indication is True:
-            page.evaluate(
-                f"""(element) => {{
-                       element.style.backgroundColor = "{rgba_str}";
-                   }}""",
-                random_input_element,
-            )
-            time.sleep(0.5)
-            page.evaluate(
-                """(element) => {
-                       element.style.backgroundColor = "transparent";
-                   }""",
-                random_input_element,
-            )
+            draw_indicator(page, random_input_element, color)
         if (input_type == 'text') or (input_type is None) or (input_type == 'email') or (input_type == 'password'):
             random_input_element.type(random_text)
             LogTyper.logger.info(f"Typed {random_text} into a text element at position {x, y}")
@@ -95,23 +103,9 @@ def send_keys(page, indication, restricted_page, color):
         x, y = int(random_input_element.bounding_box()["x"]), int(random_input_element.bounding_box()["y"])
         input_type = ['Shift', 'Backspace', 'Control', 'Escape', 'Alt', 'Delete', 'Enter']
         random_input_type = random.choice(input_type)
-        rgba_color = to_rgba(color, alpha=0.7)
-        rgba_str = f"rgba({int(rgba_color[0] * 255)},{int(rgba_color[1] * 255)},{int(rgba_color[2] * 255)},{rgba_color[3]})"
         page.wait_for_load_state("networkidle")
         if indication is True:
-            page.evaluate(
-                f"""(element) => {{
-                       element.style.backgroundColor = "{rgba_str}";
-                   }}""",
-                random_input_element,
-            )
-            time.sleep(0.5)
-            page.evaluate(
-                """(element) => {
-                       element.style.backgroundColor = "transparent";
-                   }""",
-                random_input_element,
-            )
+            draw_indicator(page, random_input_element, color)
         random_input_element.press(random_input_type)
         if restricted_page:
             blocking_movement(page, initial_url)
