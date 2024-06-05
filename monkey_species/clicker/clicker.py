@@ -72,6 +72,33 @@ def blocking_movement(page, initial_url):
         page.goto(initial_url)
 
 
+def has_target_blank_and_href(page, element):
+    target_blank = page.evaluate("(element) => element.getAttribute('target') === '_blank'", element)
+    has_href = page.evaluate("(element) => element.hasAttribute('href')", element)
+    return target_blank, has_href
+
+def is_image_and_has_target_blank_and_href(page, element):
+    tag_name = page.evaluate("(element) => element.tagName.toLowerCase()", element)
+    if tag_name == 'img':
+        link_element_handle = page.evaluate_handle("""
+                (element) => {
+                    while (element.parentElement) {
+                        if (element.parentElement.tagName.toLowerCase() === 'a') {
+                            return element.parentElement;
+                        }
+                        element = element.parentElement;
+                    }
+                    return null;
+                }
+            """, element)
+        if link_element_handle.as_element():
+            target_blank, has_href = has_target_blank_and_href(page, link_element_handle)
+            return target_blank, has_href, tag_name
+
+    target_blank, has_href = has_target_blank_and_href(page, element)
+    return target_blank, has_href, tag_name
+
+
 def get_element_and_coordinate(page):
     page.wait_for_load_state("domcontentloaded")
     visible_elements = find_locators(page)
@@ -84,17 +111,35 @@ def get_element_and_coordinate(page):
     return element, x, y
 
 
+def open_new_tab(page, x, y, restricted_page, count):
+    with page.context.expect_page() as new_page_info:
+        if count == 0:
+            page.mouse.click(x, y, delay=3000)
+        elif count == 1:
+            page.mouse.click(x, y)
+        elif count == 2:
+            page.mouse.dblclick(x, y)
+        else:
+            page.mouse.click(x, y, click_count=count)
+    if not restricted_page:
+        new_page = new_page_info.value
+        new_page.bring_to_front()
+        return new_page
+    return page
+
+
 def click(page, indication, restricted_page, color):
     element, x, y = get_element_and_coordinate(page)
     if not element:
-        return
-    tag_name = page.evaluate("(element) => element.tagName.toLowerCase()", element)
-    has_href = page.evaluate("(element) => element.hasAttribute('href')", element)
+        return page
+    target_blank, has_href, tag_name = is_image_and_has_target_blank_and_href(page, element)
     initial_url = page.url
     try:
         if indication:
             draw_indicator(page, x, y, color)
-        if has_href:
+        if target_blank:
+            page = open_new_tab(page, x, y, restricted_page, 1)
+        elif has_href:
             with page.expect_navigation():
                 page.mouse.click(x, y)
         else:
@@ -108,23 +153,26 @@ def click(page, indication, restricted_page, color):
         LogClicker.logger.info(f"Clicked at position {x, y}")
     except PlaywrightTimeoutError:
         LogClicker.logger.warning("Warning: The waiting time for the action has been exceeded")
+        return page
     except Exception as e:
         LogClicker.logger.error("Error: Click failed")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
+    return page
 
 
 def double_click(page, indication, restricted_page, color):
     element, x, y = get_element_and_coordinate(page)
     if not element:
-        return
-    tag_name = page.evaluate("(element) => element.tagName.toLowerCase()", element)
-    has_href = page.evaluate("(element) => element.hasAttribute('href')", element)
+        return page
+    target_blank, has_href, tag_name = is_image_and_has_target_blank_and_href(page, element)
     initial_url = page.url
     try:
         if indication:
             draw_indicator(page, x, y, color)
             draw_indicator(page, x, y, color)
-        if has_href:
+        if target_blank:
+            page = open_new_tab(page, x, y, restricted_page, 2)
+        elif has_href:
             with page.expect_navigation():
                 page.mouse.dblclick(x, y)
         else:
@@ -138,24 +186,27 @@ def double_click(page, indication, restricted_page, color):
         LogClicker.logger.info(f"Clicked at position {x, y} 2 times")
     except PlaywrightTimeoutError:
         LogClicker.logger.warning("Warning: The waiting time for the action has been exceeded")
+        return page
     except Exception as e:
         LogClicker.logger.error("Double click failed")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
+    return page
 
 
 def multiple_click(page, indication, restricted_page, color):
     element, x, y = get_element_and_coordinate(page)
     if not element:
-        return
-    tag_name = page.evaluate("(element) => element.tagName.toLowerCase()", element)
-    has_href = page.evaluate("(element) => element.hasAttribute('href')", element)
+        return page
+    target_blank, has_href, tag_name = is_image_and_has_target_blank_and_href(page, element)
     count = random.randint(3, 10)
     initial_url = page.url
     try:
         for i in range(count):
             if indication:
                 draw_indicator(page, x, y, color)
-        if has_href:
+        if target_blank:
+            page = open_new_tab(page, x, y, restricted_page, count)
+        elif has_href:
             with page.expect_navigation():
                 page.mouse.click(x, y, click_count=count)
         else:
@@ -170,15 +221,17 @@ def multiple_click(page, indication, restricted_page, color):
         page.wait_for_load_state("load")
     except PlaywrightTimeoutError:
         LogClicker.logger.warning("Warning: The waiting time for the action has been exceeded")
+        return page
     except Exception as e:
         LogClicker.logger.error("Multiple clicks failed")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
+    return page
 
 
 def hover(page, indication, restricted_page, color):
     element, x, y = get_element_and_coordinate(page)
     if not element:
-        return
+        return page
     try:
         if indication:
             draw_indicator(page, x, y, color)
@@ -186,22 +239,25 @@ def hover(page, indication, restricted_page, color):
         LogClicker.logger.info(f"Hovered at position {x, y}")
     except TimeoutError:
         LogClicker.logger.warning("Warning: The waiting time for the action has been exceeded")
+        return page
     except Exception as e:
         LogClicker.logger.error("Hover failed")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
+    return page
 
 
 def click_and_hold(page, indication, restricted_page, color):
     element, x, y = get_element_and_coordinate(page)
     if not element:
-        return
-    tag_name = page.evaluate("(element) => element.tagName.toLowerCase()", element)
-    has_href = page.evaluate("(element) => element.hasAttribute('href')", element)
+        return page
+    target_blank, has_href, tag_name = is_image_and_has_target_blank_and_href(page, element)
     initial_url = page.url
     try:
         if indication:
             draw_indicator(page, x, y, color)
-        if has_href:
+        if target_blank:
+            page = open_new_tab(page, x, y, restricted_page, 0)
+        elif has_href:
             with page.expect_navigation():
                 page.mouse.click(x, y, delay=3000)
         else:
@@ -214,7 +270,9 @@ def click_and_hold(page, indication, restricted_page, color):
         LogClicker.logger.info(f"Clicked and held at position {x, y}")
     except PlaywrightTimeoutError:
         LogClicker.logger.warning("Warning: The waiting time for the action has been exceeded")
+        return page
     except Exception as e:
         LogClicker.logger.error("Click and hold failed")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
+    return page
 
