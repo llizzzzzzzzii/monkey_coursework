@@ -1,7 +1,5 @@
 from monkey_logging.monkey_logger import LogMonkey
 from monkey_logging.monkey_logger import LogError
-from monkey_species.typer.typer import send_keys
-from monkey_species.typer.typer import send_text
 from monkey_species.typer.typer import get_random_action
 from monkey_species.clicker import clicker
 from monkey_species.resizer.resizer import resize_page
@@ -27,7 +25,6 @@ class Monkey:
         self.restricted_page = restricted_page
         self.color = color
 
-
     def log_console_message(self, msg):
         if msg.type == 'error':
             LogError.logger.error(f"Console error: {msg.text}")
@@ -35,14 +32,13 @@ class Monkey:
                 self.count = 0
 
     def on_page_popup(self, popup):
-            popup.close()
+        popup.close()
 
     def run(self):
         try:
             species_str = ', '.join(specie for specie in self.species)
             LogMonkey.logger.info(f"Run monkey with {species_str}")
             self.page.goto(self.url)
-            self.page.wait_for_load_state('domcontentloaded')
             if self.restricted_page:
                 self.page.on("popup", self.on_page_popup)
             current = 0
@@ -50,43 +46,31 @@ class Monkey:
             while current < self.count:
                 actions = self.species
                 for action in actions:
-                    #тестовая строка для вызова ошибок в браузере
-                    #self.page.evaluate('''console.error("Это тестовая ошибка в браузере");''')
                     if action == 'typer':
-                        if get_random_action() == 'text':
-                            send_text(self.page, self.indication, self.restricted_page, self.color)
-                            current += 1
-                            time.sleep(self.delay)
-                        else:
-                            send_keys(self.page, self.indication, self.restricted_page, self.color)
-                            current += 1
-                            time.sleep(self.delay)
-                    if action == 'clicker':
+                        typer_action = get_random_action()
+                        typer_action(self.page, self.indication, self.restricted_page, self.color)
+                    elif action == 'clicker':
                         click_action = clicker.random_action()
                         self.page = click_action(self.page, self.indication, self.restricted_page, self.color)
-                        current += 1
-                        time.sleep(self.delay)
-                    if action == 'scroller':
+                    elif action == 'scroller':
                         scroll_to_random_position(self.page)
-                        current += 1
-                        time.sleep(self.delay)
-                    if action == 'reloader':
+                    elif action == 'reloader':
                         reload_page(self.page)
-                        current += 1
-                        time.sleep(self.delay)
-                    if action == 'resizer':
+                    elif action == 'resizer':
                         resize_page(self.page, self.color)
-                        current += 1
-                        time.sleep(self.delay)
-                    if action == 'toucher':
+                    elif action == 'toucher':
                         self.page = touch(self.page, self.indication, self.restricted_page, self.color)
-                        current += 1
-                        time.sleep(self.delay)
+                    else:
+                        LogMonkey.logger.error("Error: Unknown action")
+                        LogMonkey.logger.error("Fail")
+                        return
+                    current += 1
                     if self.count == 0:
                         LogMonkey.logger.error("Fail")
                         return
                     if self.count == current:
                         break
+                    time.sleep(self.delay)
         except PlaywrightTimeoutError:
             LogMonkey.logger.error("Error: The page is not responding")
             LogMonkey.logger.error("Fail")
@@ -105,4 +89,3 @@ class Monkey:
             return
 
         LogMonkey.logger.info("Success")
-

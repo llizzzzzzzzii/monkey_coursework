@@ -7,7 +7,7 @@ import string
 
 
 def get_random_action():
-    rand_action = ['text', 'keys']
+    rand_action = [send_text, send_keys]
     return random.choice(rand_action)
 
 
