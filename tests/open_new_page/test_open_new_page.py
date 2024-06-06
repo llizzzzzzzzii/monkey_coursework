@@ -5,11 +5,12 @@ from monkey_logging.monkey_logger import LogError
 from monkey_species.clicker.clicker import open_new_tab
 import time
 
+
 @pytest.fixture
 def browser_page():
     try:
         with sync_playwright() as p:
-            browser = p.chromium.launch(headless=False)
+            browser = p.chromium.launch()
             page = browser.new_page()
             yield page
             browser.close()
@@ -28,3 +29,11 @@ def test_open_new_page(browser_page):
     assert new_page != page
 
 
+def test_not_open_new_page(browser_page):
+    page = browser_page
+    page.goto(
+        "https://alfabank.ru/alfastudents/")
+    page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+    time.sleep(1)
+    new_page = open_new_tab(page, 904, 453, True, 1)
+    assert new_page == page
