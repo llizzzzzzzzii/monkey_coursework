@@ -33,7 +33,7 @@ def get_element_and_coordinate(page):
     visible_elements = find_locators(page)
     if not visible_elements:
         LogTyper.logger.warning("Warning: The element was not found")
-        return
+        return [], -1, -1
     element = random.choice(visible_elements)
     x, y = int(element.bounding_box()["x"]), int(element.bounding_box()["y"])
     return element, x, y
@@ -45,6 +45,8 @@ def send_text(page, indication, restricted_page, color):
         random_text = get_random_string()
         random_number = get_random_number()
         element, x, y = get_element_and_coordinate(page)
+        if not element:
+            return
         input_type = element.get_attribute('type')
         input_mode = element.get_attribute('inputmode')
         if indication is True:
@@ -68,6 +70,8 @@ def send_keys(page, indication, restricted_page, color):
         page.wait_for_load_state("domcontentloaded")
         initial_url = page.url
         element, x, y = get_element_and_coordinate(page)
+        if not element:
+            return
         input_type = ['Shift', 'Backspace', 'Control', 'Escape', 'Alt', 'Delete', 'Enter']
         random_input_type = random.choice(input_type)
         if indication is True:

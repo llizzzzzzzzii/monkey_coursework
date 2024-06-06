@@ -23,7 +23,7 @@ def get_element_and_coordinate(page):
     visible_elements = find_locators(page)
     if not visible_elements:
         LogClicker.logger.warning("Warning: The element was not found")
-        return [], 0, 0
+        return [], -1, -1
     element = random.choice(visible_elements)
     bounding_box = element.bounding_box()
     x, y = int(bounding_box['x'] + bounding_box['width'] / 2), int(bounding_box['y'] + bounding_box['height'] / 2)
