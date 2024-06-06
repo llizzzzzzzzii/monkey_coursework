@@ -33,5 +33,12 @@ def test_image_has_not_href(browser_page):
     page.goto('https://cashpo-design.ru/news/kak-ukhazhivat-za-orkhideei-v-domashnikh-usloviyakh')
     element = page.locator(
         'img[src="userfiles/новости/orkhidei-2.jpg"][alt="Орхидеи в горшках в интерьере"].js-qazy-loaded').element_handle()
-    print(element)
     assert is_image_and_has_target_blank_and_href(page, element) == (False, False, 'img')
+
+def test_element_has_href(browser_page):
+    page = browser_page
+    page.goto(
+        "https://ru.wikipedia.org/wiki/%D0%97%D0%B0%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0")
+    element = page.locator(
+        'a[href="/wiki/%D0%97%D0%B0%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0"][title="Перейти на заглавную страницу [alt-shift-z]"][accesskey="z"]').element_handle()
+    assert is_image_and_has_target_blank_and_href(page, element) == (False, True, 'a')
