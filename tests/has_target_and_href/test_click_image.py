@@ -24,3 +24,9 @@ def test_has_href(browser_page):
     element = page.locator(selector).element_handle()
     assert has_target_blank_and_href(page,element) == (False, True)
 
+def test_has_target(browser_page):
+    page = browser_page
+    page.goto('http://devtoolschallenger.com/')
+    selector = 'a.download.non-ff[href="https://www.mozilla.org/firefox/developer/"][target="_blank"]:text("Get yours today »")'
+    element = page.locator(selector).element_handle()
+    assert has_target_blank_and_href(page,element) == (True, True)
