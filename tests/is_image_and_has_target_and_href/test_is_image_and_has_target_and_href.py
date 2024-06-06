@@ -26,15 +26,15 @@ def test_image_has_href(browser_page):
         'img[alt="иконка карточки"].a2lPS.e2lPS[loading="lazy"][height="40"][src="https://alfabank.servicecdn.ru/media/main-page-assets/main-page_selfemployed-icon.svg"][width="40"]').nth(
         index).element_handle()
     assert is_image_and_has_target_blank_and_href(page, element) == (False, True, 'img')
-
-
+#
+#
 def test_image_has_not_href(browser_page):
     page = browser_page
     page.goto('https://cashpo-design.ru/news/kak-ukhazhivat-za-orkhideei-v-domashnikh-usloviyakh')
     element = page.locator(
         'img[src="userfiles/новости/orkhidei-2.jpg"][alt="Орхидеи в горшках в интерьере"].js-qazy-loaded').element_handle()
     assert is_image_and_has_target_blank_and_href(page, element) == (False, False, 'img')
-
+#
 def test_element_has_href(browser_page):
     page = browser_page
     page.goto(
@@ -42,3 +42,11 @@ def test_element_has_href(browser_page):
     element = page.locator(
         'a[href="/wiki/%D0%97%D0%B0%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0"][title="Перейти на заглавную страницу [alt-shift-z]"][accesskey="z"]').element_handle()
     assert is_image_and_has_target_blank_and_href(page, element) == (False, True, 'a')
+
+def test_image_has_target(browser_page):
+    page = browser_page
+    page.goto(
+        "https://alfabank.ru/alfastudents/")
+    page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+    element = page.locator('img.aDNQV.gDNQV[height="24"][width="24"][loading="lazy"][src="https://alfabank.servicecdn.ru/site-upload/ad/cd/7467/Alfabank_icon_24px.png"]').element_handle()
+    assert is_image_and_has_target_blank_and_href(page, element) == (True, True, 'img')
