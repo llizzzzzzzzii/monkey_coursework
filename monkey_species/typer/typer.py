@@ -1,42 +1,16 @@
 from indicattion.typer_indication import draw_indicator
-from locators.typer_locators import find_locators
 from monkey_logging.monkey_logger import LogTyper
 from monkey_logging.monkey_logger import LogError
+from monkey_species.typer.typer_handler import get_random_string
+from monkey_species.typer.typer_handler import get_random_number
+from monkey_species.typer.typer_handler import get_element_and_coordinate
+from monkey_species.typer.typer_handler import blocking_movement
 import random
-import string
 
 
 def get_random_action():
     rand_action = [send_text, send_keys]
     return random.choice(rand_action)
-
-
-def get_random_string():
-    length = random.randint(1, 255)
-    random_string = ''.join(random.choices(string.ascii_letters + string.digits + string.punctuation, k=length))
-    return random_string
-
-
-def get_random_number():
-    length = random.randint(1, 255)
-    random_string = ''.join(random.choices(string.digits, k=length))
-    return random_string
-
-
-def blocking_movement(page, initial_url):
-    current_url = page.url
-    if current_url != initial_url:
-        page.goto(initial_url)
-
-
-def get_element_and_coordinate(page):
-    visible_elements = find_locators(page)
-    if not visible_elements:
-        LogTyper.logger.warning("Warning: The element was not found")
-        return [], -1, -1
-    element = random.choice(visible_elements)
-    x, y = int(element.bounding_box()["x"]), int(element.bounding_box()["y"])
-    return element, x, y
 
 
 def send_text(page, indication, restricted_page, color):
