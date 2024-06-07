@@ -1,5 +1,5 @@
 from playwright.sync_api import sync_playwright
-from monkey_species.clicker.clicker import find_locators
+from locators.clicker_toucher_locators import find_locators
 import pytest
 from monkey_logging.monkey_logger import LogMonkey
 from monkey_logging.monkey_logger import LogError

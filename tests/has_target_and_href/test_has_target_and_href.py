@@ -2,7 +2,7 @@ from playwright.sync_api import sync_playwright
 import pytest
 from monkey_logging.monkey_logger import LogMonkey
 from monkey_logging.monkey_logger import LogError
-from monkey_species.clicker.clicker import has_target_blank_and_href
+from locators.clicker_toucher_locators import has_target_blank_and_href
 
 
 @pytest.fixture
