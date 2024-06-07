@@ -31,8 +31,8 @@ def test_image_has_href(browser_page):
 def test_image_has_not_href(browser_page):
     page = browser_page
     page.goto('https://cashpo-design.ru/news/kak-ukhazhivat-za-orkhideei-v-domashnikh-usloviyakh')
-    element = page.locator(
-        'img[src="userfiles/новости/orkhidei-2.jpg"][alt="Орхидеи в горшках в интерьере"].js-qazy-loaded').element_handle()
+    page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+    element = page.locator(('img[alt="Mir"][src="userfiles/image/mir-min.png"].var')).element_handle()
     assert is_image_and_has_target_blank_and_href(page, element) == (False, False, 'img')
 
 
