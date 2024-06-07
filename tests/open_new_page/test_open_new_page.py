@@ -22,18 +22,14 @@ def browser_page():
 def test_open_new_page(browser_page):
     page = browser_page
     page.goto(
-        "https://alfabank.ru/alfastudents/")
-    page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
-    time.sleep(1)
-    new_page = open_new_tab(page, 904, 453, False, 1)
+        "https://cashpo-design.ru/news/kak-ukhazhivat-za-orkhideei-v-domashnikh-usloviyakh")
+    new_page = open_new_tab(page, 856, 97, False, 1)
     assert new_page != page
 
 
 def test_not_open_new_page(browser_page):
     page = browser_page
     page.goto(
-        "https://alfabank.ru/alfastudents/")
-    page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
-    time.sleep(1)
-    new_page = open_new_tab(page, 904, 453, True, 1)
+        "https://cashpo-design.ru/news/kak-ukhazhivat-za-orkhideei-v-domashnikh-usloviyakh")
+    new_page = open_new_tab(page, 856, 97, True, 1)
     assert new_page == page
