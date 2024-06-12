@@ -52,12 +52,10 @@ def actions_with_restriction(page, x, y, has_href, tag_name):
 def actions_unlimited(page, x, y, target_blank, has_href, tag_name):
     if target_blank:
         page = open_new_tab(page, x, y)
-    elif has_href and tag_name != 'img':
+    elif has_href:
         with page.expect_navigation():
             page.touchscreen.tap(x, y)
-    elif has_href and tag_name == 'img':
-        with page.expect_navigation():
-            page.touchscreen.tap(x, y)
+    if tag_name == 'img':
         time.sleep(0.3)
         page.keyboard.press("Escape")
     else:

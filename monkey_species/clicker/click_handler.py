@@ -66,12 +66,10 @@ def actions_with_restriction(page, x, y, has_href, tag_name, count):
 def actions_unlimited(page, x, y, target_blank, has_href, tag_name, count):
     if target_blank:
         page = open_new_tab(page, x, y, count)
-    elif has_href and tag_name != 'img':
+    elif has_href:
         with page.expect_navigation():
             mouse_click(page, x, y, count)
-    elif has_href and tag_name == 'img':
-        with page.expect_navigation():
-            mouse_click(page, x, y, count)
+    if tag_name == 'img':
         time.sleep(0.2 + count * 0.1)
         page.keyboard.press("Escape")
     else:
