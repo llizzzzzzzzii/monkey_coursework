@@ -9,6 +9,8 @@ from monkey_species.toucher.toucher import touch
 from playwright._impl._errors import TimeoutError as PlaywrightTimeoutError
 from playwright._impl._errors import TargetClosedError as PlaywrightTargetClosedError
 from playwright._impl._errors import Error as PlaywrightError
+from locators.clicker_toucher_locators import find_locators as clickable_find_locators
+from locators.typer_locators import find_locators as input_find_locators
 import time
 
 
@@ -43,15 +45,20 @@ class Monkey:
                 self.page.on("popup", self.on_page_popup)
             current = 0
             self.page.on("console", lambda msg: self.log_console_message(msg))
+            if "clicker" in self.species or "toucher" in self.species:
+                clickable_selectors = clickable_find_locators(self.page)
+            if "typer" in self.species:
+                input_selectors = input_find_locators(self.page)
             while current < self.count:
                 actions = self.species
                 for action in actions:
                     if action == 'typer':
                         typer_action = get_random_action()
-                        typer_action(self.page, self.indication, self.restricted_page, self.color)
+                        typer_action(self.page, self.indication, self.restricted_page, self.color, input_selectors)
                     elif action == 'clicker':
                         click_action = clicker.random_action()
-                        self.page = click_action(self.page, self.indication, self.restricted_page, self.color)
+                        self.page = click_action(self.page, self.indication, self.restricted_page, self.color,
+                                                 clickable_selectors)
                     elif action == 'scroller':
                         scroll_to_random_position(self.page)
                     elif action == 'reloader':
@@ -59,7 +66,8 @@ class Monkey:
                     elif action == 'resizer':
                         resize_page(self.page, self.color)
                     elif action == 'toucher':
-                        self.page = touch(self.page, self.indication, self.restricted_page, self.color)
+                        self.page = touch(self.page, self.indication, self.restricted_page, self.color,
+                                          clickable_selectors)
                     else:
                         LogMonkey.logger.error("Error: Unknown action")
                         LogMonkey.logger.error("Fail")
@@ -71,6 +79,14 @@ class Monkey:
                     if self.count == current:
                         break
                     time.sleep(self.delay)
+                    after_scroll_page_position = self.page.evaluate('() => window.scrollY')
+                    half_viewport_height = self.page.evaluate('() => window.innerHeight / 2')
+                    if ((not self.restricted_page and self.url != self.page.url)
+                            or (after_scroll_page_position >= half_viewport_height)):
+                        if "clicker" in self.species or "toucher" in self.species:
+                            clickable_selectors = clickable_find_locators(self.page)
+                        if "typer" in self.species:
+                            input_selectors = input_find_locators(self.page)
         except PlaywrightTimeoutError:
             LogMonkey.logger.error("Error: The page is not responding")
             LogMonkey.logger.error("Fail")
