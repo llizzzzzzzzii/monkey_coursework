@@ -1,4 +1,4 @@
-from indicattion.typer_indication import draw_indicator
+from indication.typer_indication import draw_indicator
 from monkey_logging.monkey_logger import LogTyper
 from monkey_logging.monkey_logger import LogError
 from monkey_species.typer.typer_handler import get_random_string
@@ -13,12 +13,12 @@ def get_random_action():
     return random.choice(rand_action)
 
 
-def send_text(page, indication, restricted_page, color):
+def send_text(page, indication, restricted_page, color, selectors):
     try:
         page.wait_for_load_state("domcontentloaded")
         random_text = get_random_string()
         random_number = get_random_number()
-        element, x, y = get_element_and_coordinate(page)
+        element, x, y = get_element_and_coordinate(page, selectors)
         if not element:
             return
         input_type = element.get_attribute('type')
@@ -39,20 +39,19 @@ def send_text(page, indication, restricted_page, color):
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
 
 
-def send_keys(page, indication, restricted_page, color):
+def send_keys(page, indication, restricted_page, color, selectors):
     try:
         page.wait_for_load_state("domcontentloaded")
-        initial_url = page.url
-        element, x, y = get_element_and_coordinate(page)
+        element, x, y = get_element_and_coordinate(page, selectors)
         if not element:
             return
         input_type = ['Shift', 'Backspace', 'Control', 'Escape', 'Alt', 'Delete', 'Enter']
         random_input_type = random.choice(input_type)
+        if restricted_page:
+            blocking_movement(page, element)
         if indication is True:
             draw_indicator(page, element, color)
         element.press(random_input_type)
-        if restricted_page:
-            blocking_movement(page, initial_url)
         LogTyper.logger.info(f"Sent {random_input_type} key to a text element at position {x, y}")
     except TimeoutError:
         LogTyper.logger.warning("Warning: The waiting time for the action has been exceeded")
