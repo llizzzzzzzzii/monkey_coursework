@@ -55,9 +55,9 @@ def actions_unlimited(page, x, y, target_blank, has_href, tag_name):
     elif has_href:
         with page.expect_navigation():
             page.touchscreen.tap(x, y)
-    if tag_name == 'img':
-        time.sleep(0.3)
-        page.keyboard.press("Escape")
+        if tag_name == 'img':
+            time.sleep(0.3)
+            page.keyboard.press("Escape")
     else:
         page.touchscreen.tap(x, y)
         page.wait_for_load_state('networkidle')
