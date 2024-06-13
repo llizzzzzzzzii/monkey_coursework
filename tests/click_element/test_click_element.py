@@ -40,7 +40,7 @@ def test_click_with_change(browser_page):
     selector = 'a[href="/wiki/%D0%92%D0%B8%D0%BA%D0%B8%D0%BF%D0%B5%D0%B4%D0%B8%D1%8F:%D0%A1%D0%BE%D0%B4%D0%B5%D1%80%D0%B6%D0%B0%D0%BD%D0%B8%D0%B5"]'
     element = [selector]
     click_action = clicker.random_action()
-    while click_action == 'hover':
+    while click_action.__name__ == 'hover':
         click_action = clicker.random_action()
     click_action(page, True, False, 'red', element)
     assert url1 != page.url
