@@ -3,8 +3,21 @@ def find_locators(page):
     input_elements = page.query_selector_all('input:not([readonly]):not([disabled]), textarea:not([disabled]), '
                                              'div[contenteditable=true]:not([disabled]),'
                                              '[role="textbox"]:not([disabled])')
-    visible_input_elements = [element for element in input_elements if is_element_visible(page, element)]
+    visible_input_elements = [get_selector(page, element) for element in input_elements
+                                  if is_element_visible(page, element)]
     return visible_input_elements
+
+
+def get_selector(page, element):
+    tag_name = page.evaluate("element => element.tagName.toLowerCase()", element)
+    attributes_values = {
+        'id': element.get_attribute('id'),
+        'title': element.get_attribute('title'),
+        'class': element.get_attribute('class'),
+    }
+    attributes = [f"[{key}='{value}']" for key, value in attributes_values.items() if value]
+    attribute_selector = ''.join(attributes)
+    return f"{tag_name}{attribute_selector}"
 
 
 def is_element_visible(page, element):

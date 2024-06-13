@@ -1,8 +1,22 @@
 def find_locators(page):
     page.wait_for_load_state("load")
     clickable_elements = page.query_selector_all('button, a, input, img, [role="button"], [class="button"]')
-    visible_clickable_elements = [element for element in clickable_elements if is_element_visible(page, element)]
+    visible_clickable_elements = [get_selector(page, element) for element in clickable_elements
+                                  if is_element_visible(page, element)]
     return visible_clickable_elements
+
+def get_selector(page, element):
+    tag_name = page.evaluate("element => element.tagName.toLowerCase()", element)
+    attributes_values = {
+        'id': element.get_attribute('id'),
+        'title': element.get_attribute('title'),
+        'alt': element.get_attribute('alt'),
+        'class': element.get_attribute('class'),
+        'href': element.get_attribute('href')
+    }
+    attributes = [f"[{key}='{value}']" for key, value in attributes_values.items() if value]
+    attribute_selector = ''.join(attributes)
+    return f"{tag_name}{attribute_selector}"
 
 
 def is_element_visible(page, element):

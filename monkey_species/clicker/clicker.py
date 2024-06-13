@@ -10,9 +10,9 @@ def random_action():
     return get_random
 
 
-def click(page, indication, restricted_page, color):
+def click(page, indication, restricted_page, color, selectors):
     try:
-        page, x, y = perform_click_action(page, indication, restricted_page, color, 1)
+        page, x, y = perform_click_action(page, indication, restricted_page, color, 1, selectors)
         if x == -1 and y == -1:
             return page
         LogClicker.logger.info(f"Clicked at position {x, y}")
@@ -22,9 +22,9 @@ def click(page, indication, restricted_page, color):
     return page
 
 
-def double_click(page, indication, restricted_page, color):
+def double_click(page, indication, restricted_page, color, selectors):
     try:
-        page, x, y = perform_click_action(page, indication, restricted_page, color, 2)
+        page, x, y = perform_click_action(page, indication, restricted_page, color, 2, selectors)
         if x == -1 and y == -1:
             return page
         LogClicker.logger.info(f"Clicked at position {x, y} 2 times")
@@ -34,10 +34,10 @@ def double_click(page, indication, restricted_page, color):
     return page
 
 
-def multiple_click(page, indication, restricted_page, color):
+def multiple_click(page, indication, restricted_page, color, selectors):
     try:
         count = random.randint(3, 10)
-        page, x, y = perform_click_action(page, indication, restricted_page, color, count)
+        page, x, y = perform_click_action(page, indication, restricted_page, color, count, selectors)
         if x == -1 and y == -1:
             return page
         LogClicker.logger.info(f"Clicked at position {x, y} {count} times")
@@ -47,9 +47,9 @@ def multiple_click(page, indication, restricted_page, color):
     return page
 
 
-def click_and_hold(page, indication, restricted_page, color):
+def click_and_hold(page, indication, restricted_page, color, selectors):
     try:
-        page, x, y = perform_click_action(page, indication, restricted_page, color, -1)
+        page, x, y = perform_click_action(page, indication, restricted_page, color, -1, selectors)
         if x == -1 and y == -1:
             return page
         LogClicker.logger.info(f"Clicked and held at position {x, y}")
@@ -59,9 +59,9 @@ def click_and_hold(page, indication, restricted_page, color):
     return page
 
 
-def hover(page, indication, restricted_page, color):
+def hover(page, indication, restricted_page, color, selectors):
     try:
-        page, x, y = perform_click_action(page, indication, restricted_page, color, 0)
+        page, x, y = perform_click_action(page, indication, restricted_page, color, 0, selectors)
         if x == -1 and y == -1:
             return page
         LogClicker.logger.info(f"Hovered at position {x, y}")

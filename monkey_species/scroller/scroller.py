@@ -1,6 +1,7 @@
 from monkey_logging.monkey_logger import LogScroller
 from monkey_logging.monkey_logger import LogError
 import random
+import time
 
 
 def scroll_to_random_position(page):
@@ -13,6 +14,7 @@ def scroll_to_random_position(page):
         random_y = random.randint(0, height)
 
         page.evaluate('window.scrollTo({}, {})'.format(random_x, random_y))
+        time.sleep(0.3)
         LogScroller.logger.info(f"Scrolled to position {random_x, random_y}")
     except TimeoutError:
         LogScroller.logger.warning("Warning: The waiting time for the action has been exceeded")
