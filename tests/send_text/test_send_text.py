@@ -17,12 +17,15 @@ def browser_page():
         LogMonkey.logger.error("Error: Loading browser")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
 
+
 def test_send_text(browser_page):
     browser_page.goto("https://account.mail.ru/signup")
     indication = True
     restricted_page = False
     color = 'blue'
-    send_text(browser_page, indication, restricted_page, color)
+    selector = "input[id='x989c9bb8-39e5-41d9-adaf-d69add83a771'][class='input-0-2-119']"
+    element = [selector]
+    send_text(browser_page, indication, restricted_page, color, element)
     input_value = browser_page.evaluate('''() => {
             return document.querySelector('input').value;
         }''')
