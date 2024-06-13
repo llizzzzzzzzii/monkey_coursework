@@ -1,57 +1,31 @@
 from monkey_logging.monkey_logger import LogToucher
 from monkey_logging.monkey_logger import LogError
-import random
+from playwright._impl._errors import TimeoutError as PlaywrightTimeoutError
+from indication.clicker_toucher_indication import draw_indicator
+from locators.clicker_toucher_locators import is_image_and_has_target_blank_and_href
+from monkey_species.toucher.toucher_handler import get_element_and_coordinate
+from monkey_species.toucher.toucher_handler import blocking_movement
+from monkey_species.toucher.toucher_handler import actions_with_restriction
+from monkey_species.toucher.toucher_handler import actions_unlimited
 
-def blocking_movement(page, initial_url):
-    current_url = page.url
-    if current_url != initial_url:
-        page.goto(initial_url)
-
-
-def find_locators(page):
-    page.wait_for_load_state("load")
-    clickable_elements = page.query_selector_all('button, a, input, input[role="button"]')
-    viewport_height = page.viewport_size['height']
-    visible_clickable_elements = [element for element in clickable_elements if element.is_visible() and
-                                  element.bounding_box()['y'] >= 0 and element.bounding_box()['y'] <= viewport_height
-                                  and element.get_attribute('type') != 'url']
-    return visible_clickable_elements
-
-def draw_indicator(page, x, y):
-    page.evaluate('''
-      circle = document.createElement('div');
-      circle.style.width = '15px';
-      circle.style.height = '15px';
-      circle.style.borderRadius = '50%';
-      circle.style.backgroundColor = 'rgba(255, 0, 0, 0.7)';
-      circle.style.position = 'absolute';
-      circle.style.left = '{}px';
-      circle.style.top = '{}px';
-      circle.style.zIndex = '10000';
-      circle.style.pointerEvents = 'none';
-      document.body.appendChild(circle);
-      setTimeout(() => circle.remove(), 1000);
-    '''.format(x, y))
-
-
-def touch(page, indication, restricted_page, ignore_errors):
+def touch(page, indication, restricted_page, color, selectors):
+    element, x, y = get_element_and_coordinate(page, selectors)
+    if not element:
+        return page
     try:
-        page.wait_for_load_state("load")
-        initial_url = page.url
-        visible_elements = find_locators(page)
-        element = random.choice(visible_elements)
-        box = element.bounding_box()
-        x = int(box['x'] + box['width'] / 2)
-        y = int(box['y'] + box['height'] / 2)
+        target_blank, has_href, tag_name = is_image_and_has_target_blank_and_href(page, element)
         if indication:
-            draw_indicator(page, x, y)
-        element.tap()
+            draw_indicator(page, x, y, color)
         if restricted_page:
-            blocking_movement(page, initial_url)
+            blocking_movement(page, element)
+            actions_with_restriction(page, x, y, has_href, tag_name)
+        else:
+            page = actions_unlimited(page, x, y, target_blank, has_href, tag_name)
         LogToucher.logger.info(f"Tapped on an element at position {x, y}")
+    except PlaywrightTimeoutError:
+        LogToucher.logger.warning("Warning: The waiting time for the action has been exceeded")
+        return page
     except Exception as e:
         LogToucher.logger.error("Error: Touch failed")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
-        if not ignore_errors:
-            return False
-    return True
+    return page

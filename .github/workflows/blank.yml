@@ -32,6 +32,9 @@ jobs:
         run: |
             pip install colorlog
 
+      - name: Install matplotlib
+        run: |
+            pip install matplotlib
         
       - name: Test with pytest
         run: |

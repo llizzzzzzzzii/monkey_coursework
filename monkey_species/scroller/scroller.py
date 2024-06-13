@@ -1,10 +1,12 @@
 from monkey_logging.monkey_logger import LogScroller
 from monkey_logging.monkey_logger import LogError
 import random
+import time
 
 
-def scroll_to_random_position(page, ignore_errors):
+def scroll_to_random_position(page):
     try:
+        page.wait_for_load_state("load")
         width = page.evaluate('() => document.body.scrollWidth')
         height = page.evaluate('() => document.body.scrollHeight')
 
@@ -12,10 +14,10 @@ def scroll_to_random_position(page, ignore_errors):
         random_y = random.randint(0, height)
 
         page.evaluate('window.scrollTo({}, {})'.format(random_x, random_y))
+        time.sleep(0.3)
         LogScroller.logger.info(f"Scrolled to position {random_x, random_y}")
+    except TimeoutError:
+        LogScroller.logger.warning("Warning: The waiting time for the action has been exceeded")
     except Exception as e:
         LogScroller.logger.error("Error: Scroll failed")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
-        if not ignore_errors:
-            return False
-    return True

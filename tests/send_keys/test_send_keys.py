@@ -22,8 +22,10 @@ def test_send_keys(browser_page):
     browser_page.goto("https://account.mail.ru/signup")
     indication = True
     restricted_page = False
-    ignore_errors = True
-    send_keys(browser_page, indication, restricted_page,ignore_errors)
+    color = 'blue'
+    selector = "input[id='x989c9bb8-39e5-41d9-adaf-d69add83a771'][class='input-0-2-119']"
+    element = [selector]
+    send_keys(browser_page, indication, restricted_page, color, element)
     input_value = browser_page.evaluate('''() => {
             return document.querySelector('input').value;
         }''')

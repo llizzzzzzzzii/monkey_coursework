@@ -1,8 +1,9 @@
 from playwright.sync_api import sync_playwright
 import pytest
-from monkey_species.reloader.reloader import reload_page
 from monkey_logging.monkey_logger import LogMonkey
 from monkey_logging.monkey_logger import LogError
+from monkey_species.clicker.click_handler import open_new_tab
+import time
 
 
 @pytest.fixture
@@ -18,7 +19,12 @@ def browser_page():
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
 
 
-def test_reload_page(browser_page):
-    browser_page.goto("https://www.wikipedia.org/")
-    reload_page(browser_page)
-    assert browser_page.url == "https://www.wikipedia.org/"
+def test_open_new_page(browser_page):
+    page = browser_page
+    page.goto(
+        "https://cashpo-design.ru/news/kak-ukhazhivat-za-orkhideei-v-domashnikh-usloviyakh")
+    new_page = open_new_tab(page, 856, 97, 1)
+    assert new_page != page
+
+
+

@@ -4,7 +4,7 @@ import random
 import pyautogui
 
 
-def resize_page(page, ignore_errors):
+def resize_page(page, color):
     try:
         screen_width, screen_height = pyautogui.size()
         new_width = random.randint(800, screen_width)
@@ -16,7 +16,7 @@ def resize_page(page, ignore_errors):
             rect.style.left = '20px';
             rect.style.width = '{new_width - 100}px';
             rect.style.height = '{new_height - 100}px';
-            rect.style.border = '4px solid #ff0000'; // Цвет рамки красный
+            rect.style.border = '4px solid {color}';
             rect.style.opacity = '0.7';
             document.body.appendChild(rect);
                     setTimeout(() => {{
@@ -26,9 +26,8 @@ def resize_page(page, ignore_errors):
         page.evaluate(draw_rect)
         page.set_viewport_size({"width": new_width, "height": new_height})
         LogResizer.logger.info(f"Resized to {new_width, new_height}")
+    except TimeoutError:
+        LogResizer.logger.warning("Warning: The waiting time for the action has been exceeded")
     except Exception as e:
         LogResizer.logger.error("Error: Resize failed")
         LogError.logger.error(f"{type(e).__name__}: {str(e)}", exc_info=True)
-        if not ignore_errors:
-            return False
-    return True
