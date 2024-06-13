@@ -23,13 +23,8 @@ def test_open_new_page(browser_page):
     page = browser_page
     page.goto(
         "https://cashpo-design.ru/news/kak-ukhazhivat-za-orkhideei-v-domashnikh-usloviyakh")
-    new_page = open_new_tab(page, 856, 97, False, 1)
+    new_page = open_new_tab(page, 856, 97, 1)
     assert new_page != page
 
 
-def test_not_open_new_page(browser_page):
-    page = browser_page
-    page.goto(
-        "https://cashpo-design.ru/news/kak-ukhazhivat-za-orkhideei-v-domashnikh-usloviyakh")
-    new_page = open_new_tab(page, 856, 97, True, 1)
-    assert new_page == page
+
