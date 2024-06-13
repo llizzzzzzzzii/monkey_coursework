@@ -45,7 +45,7 @@ def open_new_tab(page, x, y):
 def actions_with_restriction(page, x, y, has_href, tag_name):
     page.touchscreen.tap(x, y)
     if has_href and tag_name == 'img':
-        time.sleep(0.3)
+        time.sleep(0.4)
         page.keyboard.press("Escape")
 
 
