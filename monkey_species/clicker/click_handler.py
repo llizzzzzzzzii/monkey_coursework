@@ -59,7 +59,7 @@ def blocking_movement(page, element):
 def actions_with_restriction(page, x, y, has_href, tag_name, count):
     mouse_click(page, x, y, count)
     if has_href and tag_name == 'img':
-        time.sleep(0.2 + count * 0.1)
+        time.sleep(0.4)
         page.keyboard.press("Escape")
 
 
